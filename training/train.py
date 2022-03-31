@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
-import lightgbm
 from tensorflow import keras
 import matplotlib.pyplot as plt
 
