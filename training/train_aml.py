@@ -31,21 +31,21 @@ def main():
         "--model_name",
         type=str,
         help="Name of the Model",
-        default="insurance_model.pkl",
+        default="anomaly_model.pkl",
     )
 
     parser.add_argument(
         "--data_file_path",
         type=str,
         help=("data file path, if specified,a new version of the dataset will be registered"),
-        default="insurance",
+        default="anomaly",
     )
 
     parser.add_argument(
         "--dataset_name",
         type=str,
         help="Dataset name",
-        default="insurance_dataset",
+        default="anomaly_dataset",
     )
 
     args = parser.parse_args()
