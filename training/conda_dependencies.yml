@@ -14,7 +14,7 @@
 # This directive is stored in a comment to preserve the Conda file structure.
 # [AzureMlVersion] = 2
 
-name: insurance_inference_env
+name: amlproj06_training_env
 dependencies:
   # The python interpreter version.
   # Currently Azure ML Workbench only supports 3.5.2 and later.
@@ -35,8 +35,14 @@ dependencies:
       # Scoring deps
       - inference-schema[numpy-support]
 
+      # MLOps with R
+      - azure-storage-blob
+
       # LightGBM bosting lib
       - lightgbm
+
+      # install pandas
+      - pandas
 
       # lightgbm Caps because we are throwing darts
       - LightGBM
