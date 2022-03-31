@@ -33,9 +33,10 @@ def test_train_model():
     data = __get_test_datasets()
 
     params = {
-        "learning_rate": 0.05,
-        "metric": "auc",
-        "min_data": 1
+        "learning_rate": 0.001,
+        "loss": "mar",
+        "optimizer": "adam",
+        "epochs": 20
     }
 
     model = train_model(data, params)
@@ -44,7 +45,7 @@ def test_train_model():
     for param_name in params.keys():
         assert param_name in model.params
         assert params[param_name] == model.params[param_name]
-
+# TODO: update the testing code
 
 def test_get_model_metrics():
     class MockModel:
