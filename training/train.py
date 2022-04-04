@@ -23,7 +23,8 @@ def prepare_data(data_df):
 
     return data
 
-def split_data(df, target = 'T1101', test_size = 0.2):
+def split_data(data_df, target = 'T1101', test_size = 0.2):
+    df = prepare_data(data_df)
     x = df.drop(target,axis=1)
     y = df.loc[:, target]
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = test_size,shuffle = False)
