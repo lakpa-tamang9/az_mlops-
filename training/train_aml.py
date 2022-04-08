@@ -2,10 +2,9 @@ from azureml.core.run import Run
 from azureml.core import Dataset, Datastore, Workspace
 import os
 import argparse
-import joblib
-import pickle
 import json
 from train import split_data, train_model, get_model_metrics
+import onnxmltools
 
 
 def register_dataset(
@@ -31,7 +30,7 @@ def main():
         "--model_name",
         type=str,
         help="Name of the Model",
-        default="anomaly_model.pkl",
+        default="anomaly_predict.onnx",
     )
 
     parser.add_argument(
@@ -102,6 +101,8 @@ def main():
 
     # Train the model
     model = train_model(data, train_args)
+    # convert to onnx format
+    onnx_model = onnxmltools.convert_keras(model) 
 
     # Evaluate and log the metrics returned from the train function
     metrics = get_model_metrics(model, data)
@@ -112,7 +113,9 @@ def main():
     # Also upload model file to run outputs for history
     os.makedirs('outputs', exist_ok=True)
     output_path = os.path.join('outputs', model_name)
-    joblib.dump(value=model, filename=output_path)
+    
+    # Saving the trained model
+    onnxmltools.utils.save_model(onnx_model, output_path)
 
     run.tag("run_type", value="train")
     print(f"tags now present for run: {run.tags}")
