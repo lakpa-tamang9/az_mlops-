@@ -6,4 +6,4 @@ schemaFile:
 sourceDirectory:
 enableGpu: False
 baseImage:
-baseImageRegistry:
+baseImageRegistry: 
