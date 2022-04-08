@@ -53,16 +53,6 @@ def get_model_metrics(model, data):
     # Predict using the trained model
     pred_arr = model.predict(x_test)
     arr = y_test.values()
-
-    fig=plt.figure(facecolor='white',figsize=(14,14))
-    ax=fig.add_subplot(1,1,1)
-    # ax.set(xlim=[0,44052],ylim=[-10000,10000],title='Temperature Prediction',xlabel='time',ylabel='Temperature')
-    ax.set(xlim=[0,int(data.shape[0]*0.2)],ylim=[0,400],title='Temperature Prediction',xlabel='time',ylabel='Temperature')
-    ax.plot(arr,'r',label='True')
-    ax.plot(pred_arr,'b',label='Prediction')
-    ax.legend()
-    plt.show()
-
     y_test_arr=arr.reshape((data.shape[0]+1,1))
     # Get the error value between predicted and real data
     error=((y_test_arr-pred_arr)/y_test_arr)*100
