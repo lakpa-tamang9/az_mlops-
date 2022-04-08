@@ -9,18 +9,22 @@ import matplotlib.pyplot as plt
 
 def prepare_data(data_df):
     # Define columns to dump
-    COL_DUM = ['SHUTDOWN_SELECTED','ALARM_SELECTED','WARNING_SELECTED',
+    col_dum = ['SHUTDOWN_SELECTED','ALARM_SELECTED','WARNING_SELECTED',
             'BU2700_RUN','FD2791_IN','IGT2793_ON',
             'BL2501_RUN']
-    data_df.drop('MNT_DAT_PK',axis=1,inplace=True) # removing the columns feature
-    data_df.drop('DATA_TIME',axis=1,inplace=True)
+    my_frame = data_df.drop('MNT_DAT_PK',axis=1) # removing the columns feature
+    data = my_frame.drop('DATA_TIME',axis=1)
 
-    # Replace the boolean values with the binary values.
-    for v in COL_DUM:
-        dummies = pd.get_dummies(data_df[v], prefix=v)
-        data=pd.concat([data_df,dummies],axis=1) # concatenating two data frames horizontally
+# Replace the boolean values with the binary values.
+    for v in col_dum:
+        # print(data[v].shape)
+        dummies = pd.get_dummies(data[v], prefix=v)
+        # print(dummies)
+        data=pd.concat([data,dummies],axis=1) # concatenating two data frames horizontally
+        # print(dummies.shape)
+        # print(modified_data.shape)
         data.drop(v,axis=1,inplace=True)    # dropping the original columns, inplace is set true in order if dont need to reassign df again.
-
+        # print(data[v])
     return data
 
 def split_data(data_df, target = 'T1101', test_size = 0.2):
