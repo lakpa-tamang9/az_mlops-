@@ -18,7 +18,7 @@ name: insurance_inference_env
 dependencies:
   # The python interpreter version.
   # Currently Azure ML Workbench only supports 3.5.2 and later.
-  - python=3.7.*
+  - python=3.6.*
   - pip
   # Install keras and tensorflow
   - tensorflow
