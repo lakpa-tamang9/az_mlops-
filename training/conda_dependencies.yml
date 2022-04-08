@@ -41,5 +41,12 @@ dependencies:
       # install pandas
       - pandas
 
-      # Job lib- whatever I don't know what we use it for
-      - joblib
+      # Install keras and tensorflow
+      - tensorflow
+      - keras
+      - onnxmltools
+      - tf2onnx
+      - onnxruntime
+
+      # Install matplotlib
+      - matplotlib
