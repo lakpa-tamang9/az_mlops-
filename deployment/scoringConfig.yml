@@ -20,6 +20,13 @@ dependencies:
   # Currently Azure ML Workbench only supports 3.5.2 and later.
   - python=3.7.*
   - pip
+  # Install keras and tensorflow
+  - tensorflow
+  - keras
+
+  # Install matplotlib
+  - matplotlib
+  - pandas
 
   - pip:
       # Base AzureML SDK
@@ -35,11 +42,10 @@ dependencies:
       # Scoring deps
       - inference-schema[numpy-support]
 
-      # LightGBM bosting lib
-      - lightgbm
+      # MLOps with R
+      - azure-storage-blob
 
-      # lightgbm Caps because we are throwing darts
-      - LightGBM
-
-      # Job lib- whatever I don't know what we use it for
-      - joblib
+      # onnx converter for model
+      - onnxmltools
+      - tf2onnx
+      - onnxruntime
