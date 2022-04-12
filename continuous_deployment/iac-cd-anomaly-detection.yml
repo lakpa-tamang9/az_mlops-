@@ -1,0 +1,34 @@
+pool:
+  name: Azure Pipelines
+
+variables:
+  azureml.resourceGroup: 'hsd_resource_group'
+  azureml.workspaceName: 'hsd_ml_workspace'
+
+steps:
+- task: UsePythonVersion@0
+  displayName: 'Use Python 3.6'
+  inputs:
+    versionSpec: 3.6
+
+- task: Bash@3
+  displayName: 'Bash Script'
+  inputs:
+    targetType: filePath
+    filePath: './$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment/install_dependencies.sh'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment'
+
+- task: AzureCLI@2
+  displayName: 'Add ML Extension'
+  inputs:
+    azureSubscription: 'azure-resource-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: 'az extension add -n azure-cli-ml'
+
+- task: Bash@3
+  displayName: 'Deploy to container'
+  inputs:
+    targetType: filePath
+    filePath: './$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment/deploy.sh'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment'
