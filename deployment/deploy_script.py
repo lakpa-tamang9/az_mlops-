@@ -1,8 +1,21 @@
 from azureml.core import Workspace, Environment
 from azureml.core.model import Model, InferenceConfig
 from azureml.core.webservice import AciWebservice
+import json
 
-ws = Workspace(subscription_id="7cd27cfd-2ba5-4907-a46b-b0eb4b992636", resource_group="hsd_resource_group", workspace_name="hsd_ml_workspace")
+# Load configuration for deployment
+with open("configuration.json") as f:
+    pars = json.load(f)
+
+# Create the workspace with loaded deployment configs
+try: 
+    ws = Workspace(subscription_id = pars["configs"]["subscription_id"], 
+    resource_group = pars["configs"]["resource_group"], 
+    workspace_name = pars["configs"]["workspace_name"])
+    print("The workspace is created successfully")
+
+except Exception:
+    print("Cannot create workspace. Please check the configuration settings.")
 
 # Register the model
 try:
@@ -27,8 +40,6 @@ cpu_cores=1, memory_gb=1, auth_enabled=True
 )
 
 # Load the configs containing name for the service name staging
-with open("configuration.json") as f:
-    pars = json.load(f)
 
 # Deploy the service
 service = Model.deploy(
