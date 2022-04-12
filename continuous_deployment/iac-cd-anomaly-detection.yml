@@ -30,5 +30,5 @@ steps:
   displayName: 'Deploy to container'
   inputs:
     targetType: filePath
-    filePath: './$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment/deploy.sh'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment'
+    filePath: './$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment_setup/deploy.sh'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment_setup'
