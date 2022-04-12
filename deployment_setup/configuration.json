@@ -3,6 +3,6 @@
     {   "subscription_id": "7cd27cfd-2ba5-4907-a46b-b0eb4b992636",
         "resource_group": "hsd_rg",
         "workspace_name": "hsd_ws",
-        "service_name_staging": "tempreture-pred-aci01"
+        "service_name_staging": "tempreture-pred-aci"
     }
 }
