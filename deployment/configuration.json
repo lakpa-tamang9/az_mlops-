@@ -1,0 +1,6 @@
+{
+    "configs":
+    {
+        "service_name_staging": "anomaly_detection_aci_01"
+    }
+}
