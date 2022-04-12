@@ -1,9 +1,0 @@
-{
-    "training":
-    {
-        "learning_rate": 0.001,
-        "loss" : "mae",
-        "optimizer": "adam",
-        "epochs" : 2
-    }
-}
