@@ -16,7 +16,7 @@ steps:
   inputs:
     targetType: filePath
     filePath: './$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment_setup/install_dependencies.sh'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment_setup'
 
 - task: AzureCLI@2
   displayName: 'Add ML Extension'
