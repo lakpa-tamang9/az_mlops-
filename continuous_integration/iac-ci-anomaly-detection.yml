@@ -91,7 +91,7 @@ steps:
     Contents: |
      **/metadata/*
      **/models/*
-     **/deployment/*
+     **/deployment_setup/*
      **/tests/integration/*
      **/package_requirement/*
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
