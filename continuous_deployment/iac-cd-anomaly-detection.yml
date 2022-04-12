@@ -2,8 +2,8 @@ pool:
   name: Azure Pipelines
 
 variables:
-  azureml.resourceGroup: 'hsd_resource_group'
-  azureml.workspaceName: 'hsd_ml_workspace'
+  azureml.resourceGroup: 'hsd_rg'
+  azureml.workspaceName: 'hsd_ws'
 
 steps:
 - task: UsePythonVersion@0
