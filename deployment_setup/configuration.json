@@ -1,8 +1,8 @@
 {
     "configs":
     {   "subscription_id": "7cd27cfd-2ba5-4907-a46b-b0eb4b992636",
-        "resource_group": "hsd_resource_group",
-        "workspace_name": "hsd_ml_workspace",
-        "service_name_staging": "anomaly_detection_aci_01"
+        "resource_group": "hsd_rg",
+        "workspace_name": "hsd_ws",
+        "service_name_staging": "tempreture_pred_aci_01"
     }
 }
