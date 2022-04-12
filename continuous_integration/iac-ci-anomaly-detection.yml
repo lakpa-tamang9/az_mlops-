@@ -13,7 +13,7 @@ variables:
   amlcompute.idleSecondsBeforeScaledown: '300'
   experiment.name: 'anomaly_prediction'
   azureml.location: 'eastus'
-  model.name: 'tempreture_pred'
+  model.name: 'anomaly_predict'
 
 steps:
 - task: UsePythonVersion@0
