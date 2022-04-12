@@ -15,8 +15,8 @@ steps:
   displayName: 'Bash Script'
   inputs:
     targetType: filePath
-    filePath: './$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment_setup/install_dependencies.sh'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment_setup'
+    filePath: './$(System.DefaultWorkingDirectory)/_CI-pipeline/hsd/deployment_setup/install_dependencies.sh'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/_CI-pipeline/hsd/deployment_setup'
 
 - task: AzureCLI@2
   displayName: 'Add ML Extension'
@@ -30,5 +30,5 @@ steps:
   displayName: 'Deploy to container'
   inputs:
     targetType: filePath
-    filePath: './$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment_setup/deploy.sh'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment_setup'
+    filePath: './$(System.DefaultWorkingDirectory)/_CI-pipeline/hsd/deployment_setup/deploy.sh'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/_CI-pipeline/hsd/deployment_setup'
