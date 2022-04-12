@@ -15,7 +15,7 @@ steps:
   displayName: 'Bash Script'
   inputs:
     targetType: filePath
-    filePath: './$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment/install_dependencies.sh'
+    filePath: './$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment_setup/install_dependencies.sh'
     workingDirectory: '$(System.DefaultWorkingDirectory)/_hsd_cicd-CI/hsd/deployment'
 
 - task: AzureCLI@2
