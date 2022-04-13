@@ -52,14 +52,6 @@ steps:
    export AZURE_CLIENT_SECRET=$(azureml.clientSecret)
   displayName: 'Setting up Environment Variable'
 
-- task: AzureCLI@2
-  displayName: 'Upload data to datastore'
-  inputs:
-    azureSubscription: 'azure-resource-connection'
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: 'az ml datastore upload -w $(azureml.workspaceName) -g $(azureml.resourceGroup) -n $(az ml datastore show-default -w $(azureml.workspaceName) -g $(azureml.resourceGroup) --query name -o tsv) -p data -u anomaly --overwrite true'
-
 - bash: |
    mkdir metadata && mkdir models
    
