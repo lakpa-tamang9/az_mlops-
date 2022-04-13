@@ -4,7 +4,6 @@ pool:
 #Your build pipeline references an undefined variable named ‘azureml.workSpaceName’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
 #Your build pipeline references an undefined variable named ‘jq -r .modelId metadata/model.json’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
 variables:
-- group: mlops-wsh-vg
   azureml.resourceGroup: 'hsd_rg'
   azureml.workspaceName: 'hsd_ws'
   amlcompute.clusterName: 'amlcluster'
@@ -15,6 +14,7 @@ variables:
   experiment.name: 'anomaly_prediction'
   azureml.location: 'eastus'
   model.name: 'anomaly_predict'
+- group: mlops-wsh-vg
 
 steps:
 - task: UsePythonVersion@0
