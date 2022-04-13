@@ -4,6 +4,7 @@ import os
 import argparse
 import json
 from train import split_data, train_model, get_model_metrics
+from prepare_dataset import PrepareDataset
 import onnxmltools
 
 
@@ -76,20 +77,25 @@ def main():
         run.log(k, v)
         #run.parent.log(k, v)
       
+    # Get dataset from datalake
+    try:
+        dataset = PrepareDataset.create_dataset()
+    except Exception as error:
+        print(error)
 
     # Get the dataset
-    if (dataset_name):
-        if (data_file_path == 'none'):
-            dataset = Dataset.get_by_name(run.experiment.workspace, dataset_name)  # NOQA: E402, E501
-        else:
-            dataset = register_dataset(run.experiment.workspace,
-                                       dataset_name,
-                                       "workspaceblobstore",
-                                       data_file_path)
-    else:
-        e = ("No dataset provided")
-        print(e)
-        raise Exception(e)
+    # if (dataset_name):
+    #     if (data_file_path == 'none'):
+    #         dataset = Dataset.get_by_name(run.experiment.workspace, dataset_name)  # NOQA: E402, E501
+    #     else:
+    #         dataset = register_dataset(run.experiment.workspace,
+    #                                    dataset_name,
+    #                                    "workspaceblobstore",
+    #                                    data_file_path)
+    # else:
+    #     e = ("No dataset provided")
+    #     print(e)
+    #     raise Exception(e)
 
     # Link dataset to the step run so it is trackable in the UI
     run.input_datasets['training_data'] = dataset
