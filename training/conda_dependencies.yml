@@ -25,6 +25,12 @@ dependencies:
       # Base AzureML SDK
       - azureml-sdk
 
+      # Azure identity
+      - azure-identity
+
+      # Azure keyvault
+      - azure-keyvault
+
       # Must match AzureML SDK version.
       # https://docs.microsoft.com/en-us/azure/machine-learning/concept-environments
       - azureml-defaults
