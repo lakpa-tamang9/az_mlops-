@@ -3,18 +3,18 @@ pool:
 #Your build pipeline references an undefined variable named ‘az ml datastore show-default -w $(azureml.workspaceName’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
 #Your build pipeline references an undefined variable named ‘azureml.workSpaceName’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
 #Your build pipeline references an undefined variable named ‘jq -r .modelId metadata/model.json’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
-variables:
-  azureml.resourceGroup: 'hsd_rg'
-  azureml.workspaceName: 'hsd_ws'
-  amlcompute.clusterName: 'amlcluster'
-  amlcompute.vmSize: 'STANDARD_DS2_V2'
-  amlcompute.minNodes: '0'
-  amlcompute.maxNodes: '2'
-  amlcompute.idleSecondsBeforeScaledown: '300'
-  experiment.name: 'anomaly_prediction'
-  azureml.location: 'eastus'
-  model.name: 'anomaly_predict'
-  
+# variables:
+#   azureml.resourceGroup: 'hsd_rg'
+#   azureml.workspaceName: 'hsd_ws'
+#   amlcompute.clusterName: 'amlcluster'
+#   amlcompute.vmSize: 'STANDARD_DS2_V2'
+#   amlcompute.minNodes: '0'
+#   amlcompute.maxNodes: '2'
+#   amlcompute.idleSecondsBeforeScaledown: '300'
+#   experiment.name: 'anomaly_prediction'
+#   azureml.location: 'eastus'
+#   model.name: 'anomaly_predict'
+
 variables:
 - group: mlops-wsh-vg
 
