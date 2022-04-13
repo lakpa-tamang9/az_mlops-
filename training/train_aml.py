@@ -24,6 +24,7 @@ def register_dataset(
 
 
 def main():
+    preparedataset = PrepareDataset()
     print("Running train_aml.py")
 
     parser = argparse.ArgumentParser("train")
@@ -79,9 +80,10 @@ def main():
       
     # Get dataset from datalake
     try:
-        dataset = PrepareDataset.create_dataset()
+        dataset = preparedataset.create_dataset()
     except Exception as error:
         print(error)
+    print(dataset)
 
     # Get the dataset
     # if (dataset_name):

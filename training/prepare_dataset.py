@@ -27,9 +27,8 @@ class PrepareDataset:
         self.storage_account_name = client.get_secret("ACCOUNT-NAME").value
         self.container_name = client.get_secret("CONTAINER-NAME").value
         self.storage_account_key = client.get_secret("ACCOUNT-KEY").value
-
         try:
-            with open("dataset_config.json", "r") as f:
+            with open("dataset_config.json") as f:
                 self.dataset_config = json.load(f)
         except Exception:
             print("Cannot load dataset configuration.")
@@ -58,7 +57,7 @@ class PrepareDataset:
             print(e)
         
         try:
-            datastore = Datastore.get(self.ws, self.dataset_config["datastore_name"])
+            datastore = Datastore.get(self.ws, self.dataset_config["datastore_name"])          
 
             datastore_path = [(datastore, self.dataset_config["data_path"])]
             dataset = Dataset.Tabular.from_delimited_files(datastore_path)
@@ -68,5 +67,6 @@ class PrepareDataset:
                 name=self.dataset_config["dataset_name"],
                 description=self.dataset_config["dataset_desc"],
             )
-        except Exception:
+        except Exception as e:
+            print(e)
             print("Could not register dataset")
