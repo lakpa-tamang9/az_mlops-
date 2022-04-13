@@ -43,8 +43,8 @@ class PrepareDataset:
 
     def create_dataset(self):
         """
-            - Create dataset using datastore and register it into the same ws.
             - Link datastore with data lake gen 2 as a blob storage
+            - Create dataset using datastore and register it into the same ws.
         """
         try:
             Datastore.register_azure_blob_container(
