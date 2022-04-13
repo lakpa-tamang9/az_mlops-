@@ -4,6 +4,7 @@ pool:
 #Your build pipeline references an undefined variable named ‘azureml.workSpaceName’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
 #Your build pipeline references an undefined variable named ‘jq -r .modelId metadata/model.json’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
 variables:
+- group: mlops-wsh-vg
   azureml.resourceGroup: 'hsd_rg'
   azureml.workspaceName: 'hsd_ws'
   amlcompute.clusterName: 'amlcluster'
@@ -43,6 +44,13 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: 'az ml computetarget create amlcompute -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -n $(amlcompute.clusterName) -s $(amlcompute.vmSize) --min-nodes $(amlcompute.minNodes) --max-nodes $(amlcompute.maxNodes) --idle-seconds-before-scaledown $(amlcompute.idleSecondsBeforeScaledown) '
+
+- script: |
+   export KEY_VAULT_NAME=$(azureml.keyvaultName)
+   export AZURE_CLIENT_ID=$(azureml.azureClient)
+   export AZURE_TENANT_ID=$(azureml.tenantID)
+   export AZURE_CLIENT_SECRET=$(azureml.clientSecret)
+  displayName: 'Setting up Environment Variable'
 
 - task: AzureCLI@2
   displayName: 'Upload data to datastore'
