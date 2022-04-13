@@ -62,7 +62,7 @@ class PrepareDataset:
             datastore_path = [(datastore, self.dataset_config["data_path"])]
             dataset = Dataset.Tabular.from_delimited_files(datastore_path)
 
-            dataset.register(
+            dataset = dataset.register(
                 workspace=self.ws,
                 name=self.dataset_config["dataset_name"],
                 description=self.dataset_config["dataset_desc"],
@@ -70,3 +70,4 @@ class PrepareDataset:
         except Exception as e:
             print(e)
             print("Could not register dataset")
+        return dataset
