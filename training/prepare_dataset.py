@@ -9,16 +9,17 @@ import json
 class PrepareDataset:
     """_summary_
     """
-
     def __init__(self) -> None:
-        # retrieve keyvault client
-        # TODO: Add exceptional handling
-        key_vault_name = os.environ["KEY_VAULT_NAME"]
-        key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
-        credential = DefaultAzureCredential()
-        client = SecretClient(vault_url=key_vault_uri, credential=credential)
+        # Retrieve keyvault client
+        try:
+            key_vault_name = os.environ["KEY_VAULT_NAME"]
+            key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
+            credential = DefaultAzureCredential()
+            client = SecretClient(vault_url=key_vault_uri, credential=credential)
+        except Exception as error:
+            print(error)
 
-        # retrieve account and storage details
+        # Retrieve account and storage details
         self.rg = client.get_secret("RESOURCE-GROUP").value
         self.subscription_id = client.get_secret("SUB-ID").value
         self.location = client.get_secret("LOCATION").value
@@ -27,9 +28,11 @@ class PrepareDataset:
         self.container_name = client.get_secret("CONTAINER-NAME").value
         self.storage_account_key = client.get_secret("ACCOUNT-KEY").value
 
-        # TODO: Add exceptional handling
-        with open("./training/dataset_config.json", "r") as f:
-            self.dataset_config = json.load(f)
+        try:
+            with open("dataset_config.json", "r") as f:
+                self.dataset_config = json.load(f)
+        except Exception:
+            print("Cannot load dataset configuration.")
 
         self.ws = Workspace.get(
             name=ws,
@@ -38,37 +41,32 @@ class PrepareDataset:
             location=self.location,
         )
 
-    def create_datastore(self):
-        """
-            Link datastore with data lake gen 2 as a blob storage
-        """
-        # TODO: Add exceptional handling
-        Datastore.register_azure_blob_container(
-            workspace=self.ws,
-            datastore_name=self.dataset_config["datastore_name"],
-            container_name=self.container_name,
-            account_name=self.storage_account_name,
-            account_key=self.storage_account_key,
-        )
-
     def create_dataset(self):
         """
-            Create dataset using datastore and register it into the same ws
+            - Create dataset using datastore and register it into the same ws.
+            - Link datastore with data lake gen 2 as a blob storage
         """
-        # TODO: Add exceptional handling
-        datastore = Datastore.get(self.ws, self.dataset_config["datastore_name"])
+        try:
+            Datastore.register_azure_blob_container(
+                workspace=self.ws,
+                datastore_name=self.dataset_config["datastore_name"],
+                container_name=self.container_name,
+                account_name=self.storage_account_name,
+                account_key=self.storage_account_key,
+            )
+        except Exception as e:
+            print(e)
+        
+        try:
+            datastore = Datastore.get(self.ws, self.dataset_config["datastore_name"])
 
-        datastore_path = [(datastore, self.dataset_config["data_path"])]
-        dataset = Dataset.Tabular.from_delimited_files(datastore_path)
+            datastore_path = [(datastore, self.dataset_config["data_path"])]
+            dataset = Dataset.Tabular.from_delimited_files(datastore_path)
 
-        dataset.register(
-            workspace=self.ws,
-            name=self.dataset_config["dataset_name"],
-            description=self.dataset_config["dataset_desc"],
-        )
-
-
-if __name__ == "__main__":
-    prepare_dataset = PrepareDataset()
-    prepare_dataset.create_datastore()
-    prepare_dataset.create_dataset()
+            dataset.register(
+                workspace=self.ws,
+                name=self.dataset_config["dataset_name"],
+                description=self.dataset_config["dataset_desc"],
+            )
+        except Exception:
+            print("Could not register dataset")
