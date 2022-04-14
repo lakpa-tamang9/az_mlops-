@@ -8,7 +8,12 @@ import json
 
 
 class PrepareDataset:
-    """_summary_"""
+    """
+    Prepare dataset by connecting workspace to azure data lake.
+        - Create data store by registering the blob container into the workspace
+        - From the datastore, retrive name and path of the data and convert into 
+        tabular dataset form within the workspace.
+    """
 
     def __init__(self) -> None:
         # Retrieve keyvault client
