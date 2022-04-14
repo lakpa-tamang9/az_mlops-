@@ -16,3 +16,5 @@ pip install onnxmltools
 pip install tf2onnx
 pip install onnxruntime
 pip install azureml-core
+pip install azure-identity
+pip install azure-keyvault
