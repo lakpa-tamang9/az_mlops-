@@ -4,7 +4,7 @@ from azureml.core.webservice import AciWebservice
 import json
 
 # Load configuration for deployment
-with open("configuration.json") as f:
+with open("./deployment_setup/configuration.json") as f:
     pars = json.load(f)
 
 # Create the workspace with loaded deployment configs
