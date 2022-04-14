@@ -71,3 +71,7 @@ class PrepareDataset:
             print(e)
             print("Could not register dataset")
         return dataset
+
+if __name__ == "__main__":
+    preparedataset = PrepareDataset()
+    preparedataset.create_dataset()
