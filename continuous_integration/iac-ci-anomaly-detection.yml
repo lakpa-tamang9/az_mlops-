@@ -31,6 +31,17 @@ steps:
     filePath: './package_requirement/install_requirements.sh'
     workingDirectory: 'package_requirement'
 
+- bash:
+  env:
+    KEY_VAULT_NAME: $(azureml.keyvaultName)
+    AZURE_CLIENT_ID: $(azureml.azureClient)
+    AZURE_TENANT_ID: $(azureml.tenantID)
+    AZURE_CLIENT_SECRET: $(azureml.clientSecret)
+  displayName: 'Setting up Environment Variable'
+
+- script: python training/prepare_dataset.py
+  displayName: 'Register datasets'
+
 - task: AzureCLI@2
   displayName: 'Install Azure ML CLI'
   inputs:
@@ -46,21 +57,6 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: 'az ml computetarget create amlcompute -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -n $(amlcompute.clusterName) -s $(amlcompute.vmSize) --min-nodes $(amlcompute.minNodes) --max-nodes $(amlcompute.maxNodes) --idle-seconds-before-scaledown $(amlcompute.idleSecondsBeforeScaledown) '
-
-- bash:
-  env:
-    KEY_VAULT_NAME: $(azureml.keyvaultName)
-    AZURE_CLIENT_ID: $(azureml.azureClient)
-    AZURE_TENANT_ID: $(azureml.tenantID)
-    AZURE_CLIENT_SECRET: $(azureml.clientSecret)
-  displayName: 'Setting up Environment Variable'
-
-- task: Bash@3
-  displayName: 'Prepare and Register Dataset'
-  inputs:
-    targetType: filePath
-    filePath: 'prepare_dataset.sh'
-    workingDirectory: 'training'
 
 - bash: |
    mkdir metadata && mkdir models
