@@ -55,6 +55,13 @@ steps:
     AZURE_CLIENT_SECRET: $(azureml.clientSecret)
   displayName: 'Setting up Environment Variable'
 
+- task: Bash@3
+  displayName: 'Prepare and Register Dataset'
+  inputs:
+    targetType: filePath
+    filePath: 'prepare_dataset.sh'
+    workingDirectory: 'training'
+
 - bash: |
    mkdir metadata && mkdir models
    
