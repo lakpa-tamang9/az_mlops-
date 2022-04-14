@@ -18,3 +18,4 @@ pip install onnxruntime
 pip install azureml-core
 pip install azure-identity
 pip install azure-keyvault
+pip install azure-keyvault-secrets
