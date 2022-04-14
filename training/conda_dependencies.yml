@@ -25,6 +25,8 @@ dependencies:
       - onnxruntime
       - onnxmltools
       - azureml-core
+      - pandas
+      - scikit-learn
       
       # # Base AzureML SDK
       # - azureml-sdk
