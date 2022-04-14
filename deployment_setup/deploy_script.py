@@ -6,10 +6,6 @@ from azure.keyvault.secrets import SecretClient
 import json
 import os
 
-# Load configuration for deployment
-with open("./deployment_setup/configuration.json") as f:
-    pars = json.load(f)
-
 key_vault_name = os.environ["KEY_VAULT_NAME"]
 key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
 credential = DefaultAzureCredential()
@@ -23,6 +19,7 @@ workspace_name = client.get_secret("WORKSPACE").value
 storage_account_name = client.get_secret("ACCOUNT-NAME").value
 container_name = client.get_secret("CONTAINER-NAME").value
 storage_account_key = client.get_secret("ACCOUNT-KEY").value
+service_name_staging = client.get_secret("SERVICE-NAME").value
 
 
 # Create the workspace with loaded deployment configs
@@ -62,7 +59,7 @@ cpu_cores=1, memory_gb=1, auth_enabled=True
 # Deploy the service
 service = Model.deploy(
     ws,
-    pars["configs"]["service_name_staging"],
+    service_name_staging,
     [latest_registered_model],
     inference_config,
     deployment_config,
