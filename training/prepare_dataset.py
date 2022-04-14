@@ -30,6 +30,8 @@ class PrepareDataset:
         self.subscription_id = client.get_secret("SUB-ID").value
         self.location = client.get_secret("LOCATION").value
         ws = client.get_secret("WORKSPACE").value
+
+        # Datalake information
         self.storage_account_name = client.get_secret("ACCOUNT-NAME").value
         self.container_name = client.get_secret("CONTAINER-NAME").value
         self.storage_account_key = client.get_secret("ACCOUNT-KEY").value
