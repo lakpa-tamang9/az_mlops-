@@ -1,11 +1,9 @@
 pool:
   name: Azure Pipelines
+  vmImage: ubuntu-18.04
 
 variables:
 - group: mlops-wsh-vg
-
-pool:
-  vmImage: ubuntu-18.04
 
 steps:
 - task: UsePythonVersion@0
