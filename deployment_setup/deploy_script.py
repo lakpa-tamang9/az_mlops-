@@ -1,17 +1,35 @@
 from azureml.core import Workspace, Environment
 from azureml.core.model import Model, InferenceConfig
 from azureml.core.webservice import AciWebservice
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
 import json
+import os
 
 # Load configuration for deployment
 with open("./deployment_setup/configuration.json") as f:
     pars = json.load(f)
 
+key_vault_name = os.environ["KEY_VAULT_NAME"]
+key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
+credential = DefaultAzureCredential()
+client = SecretClient(vault_url=key_vault_uri, credential=credential)
+
+# Retrieve account and storage details
+resource_group_name = client.get_secret("RESOURCE-GROUP").value
+subscription_id = client.get_secret("SUB-ID").value
+location = client.get_secret("LOCATION").value
+workspace_name = client.get_secret("WORKSPACE").value
+storage_account_name = client.get_secret("ACCOUNT-NAME").value
+container_name = client.get_secret("CONTAINER-NAME").value
+storage_account_key = client.get_secret("ACCOUNT-KEY").value
+
+
 # Create the workspace with loaded deployment configs
 try: 
-    ws = Workspace(subscription_id = pars["configs"]["subscription_id"], 
-    resource_group = pars["configs"]["resource_group"], 
-    workspace_name = pars["configs"]["workspace_name"])
+    ws = Workspace(subscription_id = subscription_id, 
+    resource_group = resource_group_name, 
+    workspace_name = workspace_name)
     print("The workspace is created successfully")
 
 except Exception:
