@@ -4,6 +4,9 @@ pool:
 variables:
 - group: mlops-wsh-vg
 
+pool:
+  vmImage: ubuntu-18.04
+
 steps:
 - task: UsePythonVersion@0
   displayName: 'Use Python 3.6'
