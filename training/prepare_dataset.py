@@ -8,8 +8,8 @@ import json
 
 
 class PrepareDataset:
-    """_summary_
-    """
+    """_summary_"""
+
     def __init__(self) -> None:
         # Retrieve keyvault client
         try:
@@ -29,7 +29,7 @@ class PrepareDataset:
         self.container_name = client.get_secret("CONTAINER-NAME").value
         self.storage_account_key = client.get_secret("ACCOUNT-KEY").value
         try:
-            with open("dataset_config.json") as f:
+            with open("./training/dataset_config.json") as f:
                 self.dataset_config = json.load(f)
         except Exception:
             print("Cannot load dataset configuration.")
@@ -43,8 +43,8 @@ class PrepareDataset:
 
     def create_dataset(self):
         """
-            - Link datastore with data lake gen 2 as a blob storage
-            - Create dataset using datastore and register it into the same ws.
+        - Link datastore with data lake gen 2 as a blob storage
+        - Create dataset using datastore and register it into the same ws.
         """
         try:
             Datastore.register_azure_blob_container(
@@ -56,9 +56,9 @@ class PrepareDataset:
             )
         except Exception as e:
             print(e)
-        
+
         try:
-            datastore = Datastore.get(self.ws, self.dataset_config["datastore_name"])          
+            datastore = Datastore.get(self.ws, self.dataset_config["datastore_name"])
 
             datastore_path = [(datastore, self.dataset_config["data_path"])]
             dataset = Dataset.Tabular.from_delimited_files(datastore_path)
@@ -69,10 +69,8 @@ class PrepareDataset:
                 description=self.dataset_config["dataset_desc"],
             )
         except Exception as e:
-            print(e)
             print("Could not register dataset")
-        return dataset
 
-if __name__ == "__main__":
-    preparedataset = PrepareDataset()
-    preparedataset.create_dataset()
+
+preparedataset = PrepareDataset()
+preparedataset.create_dataset()
