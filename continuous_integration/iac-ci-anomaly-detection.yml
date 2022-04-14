@@ -47,11 +47,12 @@ steps:
     scriptLocation: inlineScript
     inlineScript: 'az ml computetarget create amlcompute -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -n $(amlcompute.clusterName) -s $(amlcompute.vmSize) --min-nodes $(amlcompute.minNodes) --max-nodes $(amlcompute.maxNodes) --idle-seconds-before-scaledown $(amlcompute.idleSecondsBeforeScaledown) '
 
-- script: |
-   export KEY_VAULT_NAME=$(azureml.keyvaultName)
-   export AZURE_CLIENT_ID=$(azureml.azureClient)
-   export AZURE_TENANT_ID=$(azureml.tenantID)
-   export AZURE_CLIENT_SECRET=$(azureml.clientSecret)
+- bash:
+  env:
+    KEY_VAULT_NAME: $(azureml.keyvaultName)
+    AZURE_CLIENT_ID: $(azureml.azureClient)
+    AZURE_TENANT_ID: $(azureml.tenantID)
+    AZURE_CLIENT_SECRET: $(azureml.clientSecret)
   displayName: 'Setting up Environment Variable'
 
 - bash: |
