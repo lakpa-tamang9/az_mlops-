@@ -18,10 +18,10 @@ stages:
       inputs:
         azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
         action: 'Create Or Update Resource Group'
-        resourceGroupName: '$(RESOURCE_GROUP)'
-        location: $(LOCATION)
+        resourceGroupName: '$(azureml.resourceGroup)'
+        location: $(azureml.location)
         templateLocation: 'Linked artifact'
         csmFile: '$(Build.SourcesDirectory)/environment_setup/cloud-environment.json'
-        overrideParameters: '-baseName $(BASE_NAME) -location $(LOCATION) -workspace $(WORKSPACE_NAME)'
+        overrideParameters: '-baseName $(BASE_NAME) -location $(azureml.location) -workspace $(azureml.workspaceName)'
         deploymentMode: 'Incremental'
       displayName: 'Deploy OH resources to Azure'
