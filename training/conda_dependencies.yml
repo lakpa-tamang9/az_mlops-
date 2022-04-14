@@ -22,41 +22,45 @@ dependencies:
   - pip
 
   - pip:
-      # Base AzureML SDK
-      - azureml-sdk
-
-      # Azure identity
-      - azure-identity
-
-      # Azure keyvault
-      - azure-keyvault
-
-      # Dataset runtime
-      - azureml-dataset-runtime
-
-      # Must match AzureML SDK version.
-      # https://docs.microsoft.com/en-us/azure/machine-learning/concept-environments
-      - azureml-defaults
-
-      # Training deps
-      - scikit-learn
-
-      # Scoring deps
-      - inference-schema[numpy-support]
-
-      # MLOps with R
-      - azure-storage-blob
-
-      # install pandas
-      - pandas
-
-      # Install keras and tensorflow
-      - tensorflow
-      - keras
-      - onnxmltools
-      - tf2onnx
       - onnxruntime
-
-      # Install matplotlib
-      - matplotlib
+      - onnxmltools
       - azureml-core
+      
+      # # Base AzureML SDK
+      # - azureml-sdk
+
+      # # Azure identity
+      # - azure-identity
+
+      # # Azure keyvault
+      # - azure-keyvault
+
+      # # Dataset runtime
+      # - azureml-dataset-runtime
+
+      # # Must match AzureML SDK version.
+      # # https://docs.microsoft.com/en-us/azure/machine-learning/concept-environments
+      # - azureml-defaults
+
+      # # Training deps
+      # - scikit-learn
+
+      # # Scoring deps
+      # - inference-schema[numpy-support]
+
+      # # MLOps with R
+      # - azure-storage-blob
+
+      # # install pandas
+      # - pandas
+
+      # # Install keras and tensorflow
+      # - tensorflow
+      # - keras
+      
+      # - tf2onnx
+      
+
+      # # Install matplotlib
+      # - matplotlib
+      
