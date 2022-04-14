@@ -4,7 +4,6 @@ import os
 import argparse
 import json
 from train import split_data, train_model, get_model_metrics
-from prepare_dataset import PrepareDataset
 import onnxmltools
 
 def main():
