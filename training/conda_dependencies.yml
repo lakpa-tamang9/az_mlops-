@@ -30,6 +30,7 @@ dependencies:
       - scikit-learn
       - matplotlib
       - azureml-dataset-runtime
+      - tf2onnx
       
       # # Base AzureML SDK
       # - azureml-sdk
