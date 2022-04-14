@@ -7,24 +7,7 @@ from train import split_data, train_model, get_model_metrics
 from prepare_dataset import PrepareDataset
 import onnxmltools
 
-
-def register_dataset(
-    aml_workspace: Workspace,
-    dataset_name: str,
-    datastore_name: str,
-    file_path: str
-) -> Dataset:
-    datastore = Datastore.get(aml_workspace, datastore_name)
-    dataset = Dataset.Tabular.from_delimited_files(path=(datastore, file_path))
-    dataset = dataset.register(workspace=aml_workspace,
-                               name=dataset_name,
-                               create_new_version=True)
-
-    return dataset
-
-
 def main():
-    preparedataset = PrepareDataset()
     print("Running train_aml.py")
 
     parser = argparse.ArgumentParser("train")
@@ -35,29 +18,17 @@ def main():
         default="anomaly_predict.onnx",
     )
 
-    parser.add_argument(
-        "--data_file_path",
-        type=str,
-        help=("data file path, if specified,a new version of the dataset will be registered"),
-        default="anomaly",
-    )
-
-    parser.add_argument(
-        "--dataset_name",
-        type=str,
-        help="Dataset name",
-        default="anomaly_dataset",
-    )
+    try:
+        with open("dataset_config.json") as f:
+            pars = json.load(f)
+    except Exception as e:
+        print(e)
+        
+    dataset_path = pars["data_path"]
+    dataset_name = pars["dataset_name"]
 
     args = parser.parse_args()
-
-    print("Argument [model_name]: %s" % args.model_name)
-    print("Argument [data_file_path]: %s" % args.data_file_path)
-    print("Argument [dataset_name]: %s" % args.dataset_name)
-
     model_name = args.model_name
-    data_file_path = args.data_file_path
-    dataset_name = args.dataset_name
 
     run = Run.get_context()
 
@@ -77,27 +48,9 @@ def main():
     for (k, v) in train_args.items():
         run.log(k, v)
         #run.parent.log(k, v)
-      
-    # Get dataset from datalake
-    try:
-        dataset = preparedataset.create_dataset()
-    except Exception as error:
-        print(error)
-    print(dataset)
 
-    # Get the dataset
-    # if (dataset_name):
-    #     if (data_file_path == 'none'):
-    #         dataset = Dataset.get_by_name(run.experiment.workspace, dataset_name)  # NOQA: E402, E501
-    #     else:
-    #         dataset = register_dataset(run.experiment.workspace,
-    #                                    dataset_name,
-    #                                    "workspaceblobstore",
-    #                                    data_file_path)
-    # else:
-    #     e = ("No dataset provided")
-    #     print(e)
-    #     raise Exception(e)
+    # Get the dataset by name
+    dataset = Dataset.get_by_name(run.experiment.workspace, dataset_name)  # NOQA: E402, E501
 
     # Link dataset to the step run so it is trackable in the UI
     run.input_datasets['training_data'] = dataset
