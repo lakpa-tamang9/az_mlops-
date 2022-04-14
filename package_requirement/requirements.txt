@@ -1,14 +1,4 @@
-scikit-learn
-joblib
-numpy
-pandas
-pytest
-pytest-cov
-inference-schema[numpy-support]
-tensorflow
-keras
-matplotlib
-onnxmltools
-tf2onnx
-onnxruntime
 azureml-core
+azure-identity
+azure-keyvault-secrets
+azureml-dataset-runtime

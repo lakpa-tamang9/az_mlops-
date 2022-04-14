@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os
 
 from azure.identity import DefaultAzureCredential
@@ -7,8 +8,13 @@ import json
 
 
 class PrepareDataset:
-    """_summary_
     """
+    Prepare dataset by connecting workspace to azure data lake.
+        - Create data store by registering the blob container into the workspace
+        - From the datastore, retrive name and path of the data and convert into 
+        tabular dataset form within the workspace.
+    """
+
     def __init__(self) -> None:
         # Retrieve keyvault client
         try:
@@ -27,9 +33,8 @@ class PrepareDataset:
         self.storage_account_name = client.get_secret("ACCOUNT-NAME").value
         self.container_name = client.get_secret("CONTAINER-NAME").value
         self.storage_account_key = client.get_secret("ACCOUNT-KEY").value
-
         try:
-            with open("dataset_config.json", "r") as f:
+            with open("./training/dataset_config.json") as f:
                 self.dataset_config = json.load(f)
         except Exception:
             print("Cannot load dataset configuration.")
@@ -43,8 +48,8 @@ class PrepareDataset:
 
     def create_dataset(self):
         """
-            - Link datastore with data lake gen 2 as a blob storage
-            - Create dataset using datastore and register it into the same ws.
+        - Link datastore with data lake gen 2 as a blob storage
+        - Create dataset using datastore and register it into the same ws.
         """
         try:
             Datastore.register_azure_blob_container(
@@ -56,17 +61,21 @@ class PrepareDataset:
             )
         except Exception as e:
             print(e)
-        
+
         try:
             datastore = Datastore.get(self.ws, self.dataset_config["datastore_name"])
 
             datastore_path = [(datastore, self.dataset_config["data_path"])]
             dataset = Dataset.Tabular.from_delimited_files(datastore_path)
 
-            dataset.register(
+            dataset = dataset.register(
                 workspace=self.ws,
                 name=self.dataset_config["dataset_name"],
                 description=self.dataset_config["dataset_desc"],
             )
-        except Exception:
+        except Exception as e:
             print("Could not register dataset")
+
+
+preparedataset = PrepareDataset()
+preparedataset.create_dataset()

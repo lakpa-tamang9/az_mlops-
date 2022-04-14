@@ -1,6 +1,6 @@
 {
     "datastore_name": "test",
-    "data_path": "csvdata/**",
+    "data_path": "csvdata/tempdata.csv",
     "dataset_name": "new_anomaly",
     "dataset_desc": "Training datasets for test anomaly detection"
 }

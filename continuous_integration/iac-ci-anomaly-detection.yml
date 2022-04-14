@@ -1,19 +1,8 @@
 pool:
   name: Azure Pipelines
-#Your build pipeline references an undefined variable named ‘az ml datastore show-default -w $(azureml.workspaceName’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
-#Your build pipeline references an undefined variable named ‘azureml.workSpaceName’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
-#Your build pipeline references an undefined variable named ‘jq -r .modelId metadata/model.json’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+
 variables:
-  azureml.resourceGroup: 'hsd_rg'
-  azureml.workspaceName: 'hsd_ws'
-  amlcompute.clusterName: 'amlcluster'
-  amlcompute.vmSize: 'STANDARD_DS2_V2'
-  amlcompute.minNodes: '0'
-  amlcompute.maxNodes: '2'
-  amlcompute.idleSecondsBeforeScaledown: '300'
-  experiment.name: 'anomaly_prediction'
-  azureml.location: 'eastus'
-  model.name: 'anomaly_predict'
+- group: mlops-wsh-vg
 
 steps:
 - task: UsePythonVersion@0
@@ -27,6 +16,17 @@ steps:
     targetType: filePath
     filePath: './package_requirement/install_requirements.sh'
     workingDirectory: 'package_requirement'
+
+- bash:
+  env:
+    KEY_VAULT_NAME: $(azureml.keyvaultName)
+    AZURE_CLIENT_ID: $(azureml.azureClient)
+    AZURE_TENANT_ID: $(azureml.tenantID)
+    AZURE_CLIENT_SECRET: $(azureml.clientSecret)
+  displayName: 'Setting up Environment Variable'
+
+- script: python training/prepare_dataset.py
+  displayName: 'Register datasets'
 
 - task: AzureCLI@2
   displayName: 'Install Azure ML CLI'
@@ -43,14 +43,6 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: 'az ml computetarget create amlcompute -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -n $(amlcompute.clusterName) -s $(amlcompute.vmSize) --min-nodes $(amlcompute.minNodes) --max-nodes $(amlcompute.maxNodes) --idle-seconds-before-scaledown $(amlcompute.idleSecondsBeforeScaledown) '
-
-- task: AzureCLI@2
-  displayName: 'Upload data to datastore'
-  inputs:
-    azureSubscription: 'azure-resource-connection'
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: 'az ml datastore upload -w $(azureml.workspaceName) -g $(azureml.resourceGroup) -n $(az ml datastore show-default -w $(azureml.workspaceName) -g $(azureml.resourceGroup) --query name -o tsv) -p data -u anomaly --overwrite true'
 
 - bash: |
    mkdir metadata && mkdir models
