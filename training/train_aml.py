@@ -1,10 +1,13 @@
-from azureml.core.run import Run
-from azureml.core import Dataset, Datastore, Workspace
-import os
 import argparse
 import json
-from train import split_data, train_model, get_model_metrics
+import os
+
 import onnxmltools
+from azureml.core import Dataset, Datastore, Workspace
+from azureml.core.run import Run
+
+from train import get_model_metrics, split_data, train_model
+
 
 def main():
     print("Running train_aml.py")
