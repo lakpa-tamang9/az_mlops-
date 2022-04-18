@@ -18,9 +18,11 @@ class PrepareDataset:
     def __init__(self) -> None:
         # Retrieve keyvault client
         try:
+            user_assigned_identity = "18557749-e8fa-437a-aa40-dc46986b022b"
             key_vault_name = os.environ["KEY_VAULT_NAME"]
             key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
-            credential = DefaultAzureCredential()
+            # credential = DefaultAzureCredential()
+            credential = DefaultAzureCredential(managed_identity_client_id = user_assigned_identity)
             client = SecretClient(vault_url=key_vault_uri, credential=credential)
         except Exception as error:
             print(error)
