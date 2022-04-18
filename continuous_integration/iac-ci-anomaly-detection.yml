@@ -28,8 +28,6 @@ steps:
 
 - script: python training/prepare_dataset.py
   displayName: 'Register datasets'
-  inputs:
-    azureSubscription: 'azure-resource-connection'
 
 - task: AzureCLI@2
   displayName: 'Install Azure ML CLI'
