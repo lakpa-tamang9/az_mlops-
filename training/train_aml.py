@@ -6,7 +6,7 @@ import onnxmltools
 from azureml.core import Dataset, Datastore, Workspace
 from azureml.core.run import Run
 
-from train import get_model_metrics, split_data, train_model
+from train import *
 
 
 def main():
@@ -26,7 +26,6 @@ def main():
     except Exception as e:
         print(e)
         
-    dataset_path = pars["data_path"]
     dataset_name = pars["dataset_name"]
 
     args = parser.parse_args()
@@ -60,7 +59,10 @@ def main():
 
     # Split the data into test/train
     df = dataset.to_pandas_dataframe()
-    data = split_data(df)
+
+    # Select the features
+    processed_dataset = feature_selection(df)
+    data = split_data(processed_dataset)
 
     # Train the model
     model = train_model(data, train_args)

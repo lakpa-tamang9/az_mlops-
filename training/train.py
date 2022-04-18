@@ -4,6 +4,7 @@ from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
 import matplotlib.pyplot as plt
+import json
 
 # Split the dataframe into test and train data
 
@@ -27,8 +28,14 @@ def prepare_data(data_df):
         # print(data[v])
     return data
 
-def split_data(data_df, target = 'T1101', test_size = 0.2):
-    df = prepare_data(data_df)
+def split_data(df, test_size = 0.2):
+    try:
+        with open("feature_dict.json") as file:
+            feature_dict = json.load(file)
+    except Exception as e:
+        print(e)
+    target = feature_dict["key_feature"]
+    # df = prepare_data(data_df)
     x = df.drop(target,axis=1)
     y = df.loc[:, target]
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = test_size,shuffle = False)
@@ -50,6 +57,17 @@ def train_model(dataset, args):
     model.compile(loss = args["loss"], optimizer = args["optimizer"])
     model.fit(x_train, y_train, epochs = args["epochs"])
     return model
+
+def feature_selection(dataframe):
+    with open("feature_dict.json") as f:
+        features = json.load(f)
+    selected_features = []
+    for feats in features["features"]:
+        if feats not in dataframe.columns.tolist():
+            white_space_removed = feats.split(" ")[-1]
+            if white_space_removed != "IGT2793_ON":
+                selected_features.append(white_space_removed)
+    return dataframe[selected_features]
 
 def get_model_metrics(model, data):
     x_test, y_test = data["test"]["X"], data["test"]["y"]

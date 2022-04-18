@@ -1,0 +1,29 @@
+{
+    "features": [
+        " SHUTDOWN_SELECTED",
+        " ALARM_SELECTED",
+        " WARNING_SELECTED",
+        " LOAD",
+        " T3201",
+        " T1101",
+        " T1111",
+        " P1121",
+        " T2401",
+        " P2125",
+        " CPV3273_OPEN_RATE",
+        " F2141",
+        " BU2700_RUN",
+        " CPV2778_CONTROL",
+        " F2744",
+        " F2742",
+        " BL2500_CONTROL",
+        " F2241",
+        " B2772_01_PER",
+        " B2772_02_PER",
+        " BL2500_01_RUN",
+        " FD2791_IN",
+        " IGT2793_ON",
+        " T2301"
+    ],
+    "key_feature": "T2301"
+}
