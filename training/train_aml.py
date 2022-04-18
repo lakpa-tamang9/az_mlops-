@@ -53,16 +53,16 @@ def main():
     # Get the dataset by name
     dataset = Dataset.get_by_name(run.experiment.workspace, dataset_name)  # NOQA: E402, E501
 
-    # Select the features
-    processed_dataset = feature_selection(dataset)
-
     # Link dataset to the step run so it is trackable in the UI
-    run.input_datasets['training_data'] = processed_dataset
+    run.input_datasets['training_data'] = dataset
     #run.parent.tag("dataset_id", value=dataset.id)
 
     # Split the data into test/train
     df = dataset.to_pandas_dataframe()
-    data = split_data(df)
+
+    # Select the features
+    processed_dataset = feature_selection(df)
+    data = split_data(processed_dataset)
 
     # Train the model
     model = train_model(data, train_args)
