@@ -53,7 +53,7 @@ def train_model(dataset, args):
     return model
 
 def feature_selection(dataframe):
-    with open("../data_preparation/feature_dict.json") as f:
+    with open("feature_dict.json") as f:
         features = json.load(f)
     selected_features = []
     for feats in features["features"]:
