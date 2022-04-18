@@ -4,6 +4,7 @@ from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
 import matplotlib.pyplot as plt
+import json
 
 # Split the dataframe into test and train data
 
@@ -50,6 +51,17 @@ def train_model(dataset, args):
     model.compile(loss = args["loss"], optimizer = args["optimizer"])
     model.fit(x_train, y_train, epochs = args["epochs"])
     return model
+
+def feature_selection(dataframe):
+    with open("../data_preparation/feature_dict.json") as f:
+        features = json.load(f)
+    selected_features = []
+    for feats in features["features"]:
+        if feats not in dataframe.columns.tolist():
+            white_space_removed = feats.split(" ")[-1]
+            if white_space_removed != "IGT2793_ON":
+                selected_features.append(white_space_removed)
+    return dataframe[selected_features]
 
 def get_model_metrics(model, data):
     x_test, y_test = data["test"]["X"], data["test"]["y"]
