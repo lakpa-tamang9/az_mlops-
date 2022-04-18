@@ -26,7 +26,6 @@ def main():
     except Exception as e:
         print(e)
         
-    dataset_path = pars["data_path"]
     dataset_name = pars["dataset_name"]
 
     args = parser.parse_args()
@@ -54,8 +53,11 @@ def main():
     # Get the dataset by name
     dataset = Dataset.get_by_name(run.experiment.workspace, dataset_name)  # NOQA: E402, E501
 
+    # Select the features
+    processed_dataset = feature_selection(dataset)
+
     # Link dataset to the step run so it is trackable in the UI
-    run.input_datasets['training_data'] = dataset
+    run.input_datasets['training_data'] = processed_dataset
     #run.parent.tag("dataset_id", value=dataset.id)
 
     # Split the data into test/train
