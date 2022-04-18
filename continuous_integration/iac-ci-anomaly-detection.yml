@@ -32,7 +32,7 @@ steps:
     azureSubscription: 'azure-resource-connection'
     scriptType: bash
     scriptLocation: inlineScript
-    inlineScript: 'az login --service-principal --username 95c185c5-043b-467a-adb6-0b358984f7a5 --password $(AZURE_CLIENT_SECRET) --tenant $(AZURE_TENANT_ID)'
+    inlineScript: 'az login --service-principal --username 7cd27cfd-2ba5-4907-a46b-b0eb4b992636 --password $(AZURE_CLIENT_SECRET) --tenant $(AZURE_TENANT_ID)'
     
 - script: python training/prepare_dataset.py
   displayName: 'Register datasets'
