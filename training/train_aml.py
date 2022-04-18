@@ -6,7 +6,7 @@ import onnxmltools
 from azureml.core import Dataset, Datastore, Workspace
 from azureml.core.run import Run
 
-from train import get_model_metrics, split_data, train_model, feature_selection
+from train import *
 
 
 def main():
