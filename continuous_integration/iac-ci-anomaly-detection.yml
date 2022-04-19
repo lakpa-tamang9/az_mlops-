@@ -40,7 +40,7 @@ steps:
     azureSubscription: 'azure-resource-connection'
     scriptType: bash
     scriptLocation: inlineScript
-    inlineScript: 'az login --service-principal --username $(AZURE_CLIENT_ID) --password $(AZURE_CLIENT_SECRET) --tenant $(AZURE_TENANT_ID) --subscription 7cd27cfd-2ba5-4907-a46b-b0eb4b992636'
+    inlineScript: 'az login --service-principal --username 80af3691-0872-4324-a12f-47d49d995738 --password vbd8Q~yWdEyfKc8Ra_fcOS42GgYxRHYV-pGvjaLQ --tenant 3417d36b-fa61-4b84-b95e-8414a4e5753f'
     
 - script: python training/prepare_dataset.py
   displayName: 'Register datasets'
