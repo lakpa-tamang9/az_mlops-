@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import os
 
-from azure.identity import DefaultAzureCredential
+from azure.identity import DefaultAzureCredential, ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 from azureml.core import Dataset, Datastore, Workspace
 import json
@@ -23,7 +23,7 @@ class PrepareDataset:
             # client_ID = os.environ["AZURE_CLIENT_ID"]
             key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
             # credential = DefaultAzureCredential(managed_identity_client_id=client_id)
-            credential = DefaultAzureCredential(tenant_id = '3417d36b-fa61-4b84-b95e-8414a4e5753f',
+            credential = ClientSecretCredential(tenant_id = '3417d36b-fa61-4b84-b95e-8414a4e5753f',
             client_id = '3e43fe3e-52da-4f55-b82d-5f549747aebc', client_secret = 'he28Q~aWF3BYYBiO-RkQp9GHEZ_vuUrOCHgbLbFW')
             client = SecretClient(vault_url=key_vault_uri, credential=credential)
         except Exception as error:
