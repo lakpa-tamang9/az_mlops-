@@ -26,13 +26,13 @@ steps:
     AZURE_CLIENT_SECRET: $(azureml.clientSecret)
   displayName: 'Setting up Environment Variable'
 
-- task: AzureCLI@2
-  displayName: 'create service principal'
-  inputs:
-    azureSubscription: 'azure-resource-connection'
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: 'azure ad sp create --applicationId $(AZURE_CLIENT_ID)'
+# - task: AzureCLI@2
+#   displayName: 'create service principal'
+#   inputs:
+#     azureSubscription: 'azure-resource-connection'
+#     scriptType: bash
+#     scriptLocation: inlineScript
+#     inlineScript: 'azure ad sp create --applicationId $(AZURE_CLIENT_ID)'
      
 - task: AzureCLI@2
   displayName: 'Login using service principal'
@@ -40,7 +40,7 @@ steps:
     azureSubscription: 'azure-resource-connection'
     scriptType: bash
     scriptLocation: inlineScript
-    inlineScript: 'az login --service-principal --username $(AZURE_CLIENT_ID) --password $(AZURE_CLIENT_SECRET) --tenant $(AZURE_TENANT_ID)'
+    inlineScript: 'az login --service-principal --username 80af3691-0872-4324-a12f-47d49d995738 --password $(AZURE_CLIENT_SECRET) --tenant $(AZURE_TENANT_ID)'
     
 - script: python training/prepare_dataset.py
   displayName: 'Register datasets'
