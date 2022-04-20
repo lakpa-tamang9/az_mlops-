@@ -48,6 +48,7 @@ steps:
 - task: Bash@3
   displayName: 'Register dataset'
   inputs:
+    azureSubscription: 'azure-resource-connection'
     targetType: filePath
     filePath: './training/prepare_dataset.sh'
     workingDirectory: training
