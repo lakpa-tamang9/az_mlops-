@@ -76,9 +76,11 @@ class PrepareDataset:
                 workspace=self.ws,
                 name=self.dataset_config["dataset_name"],
                 description=self.dataset_config["dataset_desc"],
+                create_new_version=True
             )
         except Exception as e:
-            print("Could not register dataset")
+            print(e)
+            print("Error while registering the dataset")
 
 
 preparedataset = PrepareDataset()
