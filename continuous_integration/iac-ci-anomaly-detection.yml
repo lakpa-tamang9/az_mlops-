@@ -6,6 +6,7 @@ variables:
 - group: mlops-wsh-vg
 
 steps:
+
 - task: UsePythonVersion@0
   displayName: 'Use Python 3.6'
   inputs:
@@ -45,6 +46,13 @@ steps:
 # - script: python training/prepare_dataset.py
 #   displayName: 'Register datasets'
 
+- task: AzureKeyVault@2
+  inputs:
+    azureSubscription: 'azure-resource-connection'
+    KeyVaultName: 'hsdsecrets'
+    SecretsFilter: '*'
+    RunAsPreJob: true
+    
 - task: Bash@3
   displayName: 'Register dataset'
   inputs:
