@@ -51,8 +51,8 @@ steps:
     azureSubscription: 'azure-resource-connection'
     KeyVaultName: 'hsdsecrets'
     SecretsFilter: '*'
-    RunAsPreJob: true
-    
+    RunAsPreJob: false
+
 - task: Bash@3
   displayName: 'Register dataset'
   inputs:
