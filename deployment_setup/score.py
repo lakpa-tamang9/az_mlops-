@@ -1,4 +1,5 @@
 import json
+from urllib import response
 import onnxruntime
 import numpy as np
 import os
@@ -11,10 +12,15 @@ def init():
     session = onnxruntime.InferenceSession(model_path)
 
 def run(data):
-    data = json.loads(data)
-    data = data["input"]
-    test_data = np.expand_dims(np.array(data), axis = 1).astype('float32').reshape(1, -1)
-    test = session.run(None, {"dense_input": test_data})
-    output = {"predicated": test[0].tolist()[0][0]}
-    # predicted_value = json.dumps(output)
-    return output
+    min_data = json.loads(data)
+    result = {
+        "predicated":[]
+    }
+    # TODO: Validate the input data before sending it for predication
+    # Validation using length of input,and value of input
+    # TODO: Use algorithm to avoid predication for each value
+    for feature in min_data["features"]:
+        feature = np.expand_dims(np.array(feature), axis = 1).astype('float32').reshape(1, -1)
+        predication = session.run(None, {"dense_input": feature})
+        result["predicated"].append(predication[0].tolist()[0][0])
+    return result
