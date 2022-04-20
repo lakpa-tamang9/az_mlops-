@@ -28,13 +28,7 @@ def prepare_data(data_df):
         # print(data[v])
     return data
 
-def split_data(df, test_size = 0.2):
-    try:
-        with open("feature_dict.json") as file:
-            feature_dict = json.load(file)
-    except Exception as e:
-        print(e)
-    target = feature_dict["key_feature"]
+def split_data(df, test_size, target):
     # df = prepare_data(data_df)
     x = df.drop(target,axis=1)
     y = df.loc[:, target]

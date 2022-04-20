@@ -61,8 +61,11 @@ def main():
     df = dataset.to_pandas_dataframe()
 
     # Select the features
-    processed_dataset = feature_selection(df)
-    data = split_data(processed_dataset)
+    with open("feature_dict.json") as f:
+        features = json.load(f)
+    processed_dataset = df.drop(df.columns.difference(features["features"]), 1)
+    # processed_dataset = feature_selection(df, features["features"])
+    data = split_data(processed_dataset,test_size=0.2, features=features["key_feature"])
 
     # Train the model
     model = train_model(data, train_args)
