@@ -34,7 +34,7 @@ except Exception:
 
 # Register the model
 try:
-    latest_registered_model = Model.list(ws)[-1]    
+    latest_registered_model = Model.list(ws, latest=True)   
 except Exception:
     print("No registered model found")
 env = Environment(name="project_environment")
