@@ -65,7 +65,7 @@ def main():
         features = json.load(f)
     processed_dataset = df.drop(df.columns.difference(features["features"]), 1)
     # processed_dataset = feature_selection(df, features["features"])
-    data = split_data(processed_dataset,test_size=0.2, features=features["key_feature"])
+    data = split_data(processed_dataset,test_size=0.2, target=features["key_feature"])
 
     # Train the model
     model = train_model(data, train_args)
