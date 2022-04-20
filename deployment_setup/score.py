@@ -22,5 +22,5 @@ def run(data):
     for feature in min_data["features"]:
         feature = np.expand_dims(np.array(feature), axis = 1).astype('float32').reshape(1, -1)
         predication = session.run(None, {"dense_input": feature})
-        result["predicated"].append(predication)
+        result["predicated"].append(predication[0].tolist()[0][0])
     return result
