@@ -8,12 +8,11 @@ import argparse
 from azureml.core.authentication import ServicePrincipalAuthentication
 
 
-
 class PrepareDataset:
     """
     Prepare dataset by connecting workspace to azure data lake.
         - Create data store by registering the blob container into the workspace
-        - From the datastore, retrive name and path of the data and convert into 
+        - From the datastore, retrive name and path of the data and convert into
         tabular dataset form within the workspace.
     """
 
@@ -30,7 +29,9 @@ class PrepareDataset:
             client = SecretClient(vault_url=key_vault_uri, credential=credential)
         except Exception as error:
             print(error)
-        print(f"azure_tenanat_id:{azure_tenanat_id},\nazure_client_id:{azure_client_id}\nazure_client_secret:{azure_client_secret}")
+        print(
+            f"azure_tenanat_id:{azure_tenanat_id},\nazure_client_id:{azure_client_id}\nazure_client_secret:{azure_client_secret}"
+        )
 
         # Retrieve account and storage details
         self.rg = client.get_secret("RESOURCE-GROUP").value
@@ -51,18 +52,21 @@ class PrepareDataset:
 
         # Define service principal
         service_principal = ServicePrincipalAuthentication(
-            tenant_id = azure_tenanat_id,
-            service_principal_id = azure_client_id,
-            service_principal_password = azure_client_secret)
+            tenant_id=azure_tenanat_id,
+            service_principal_id=azure_client_id,
+            service_principal_password=azure_client_secret,
+        )
 
         # Create workspace by authenticating with service principal
         self.ws = Workspace(
             workspace_name=ws,
             subscription_id=self.subscription_id,
             resource_group=self.rg,
-            auth = service_principal
+            auth=service_principal,
         )
-        print("Found workspace {} at location {}".format(self.ws.name, self.ws.location))
+        print(
+            "Found workspace {} at location {}".format(self.ws.name, self.ws.location)
+        )
 
     def create_dataset(self):
         """
@@ -90,7 +94,7 @@ class PrepareDataset:
                 workspace=self.ws,
                 name=self.dataset_config["dataset_name"],
                 description=self.dataset_config["dataset_desc"],
-                create_new_version=True
+                create_new_version=True,
             )
         except Exception as e:
             print(e)
