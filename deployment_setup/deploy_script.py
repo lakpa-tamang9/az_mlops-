@@ -5,14 +5,26 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 import os
 from azureml.core.authentication import ServicePrincipalAuthentication
+import argparse
+
+# Get key vault name from the variable group as argument
+parser = argparse.ArgumentParser(description="Argument for key vault name")
+parser.add_argument("--kv_name", type=str, help="Name of the key vault")
+args = parser.parse_args()
+key_vault_name = args.kv_name
 
 key_vault_name = os.environ["KEY_VAULT_NAME"]
-azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
-azure_tenanat_id = os.environ["AZURE_TENANT_ID"]
-azure_client_id = os.environ["AZURE_CLIENT_ID"]
+# azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
+# azure_tenanat_id = os.environ["AZURE_TENANT_ID"]
+# azure_client_id = os.environ["AZURE_CLIENT_ID"]
 key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
 credential = DefaultAzureCredential()
 client = SecretClient(vault_url=key_vault_uri, credential=credential)
+
+# Retrive client secrets
+azure_client_secret = client.get_secret("AZURE-CLIENT-SECRET").value
+azure_tenanat_id = client.get_secret("AZURE-TENANT-ID").value
+azure_client_id = client.get_secret("AZURE-CLIENT-ID").value
 
 # Retrieve account and storage details
 resource_group_name = client.get_secret("RESOURCE-GROUP").value
