@@ -51,9 +51,9 @@ class PrepareDataset:
 
         # Define service principal
         service_principal = ServicePrincipalAuthentication(
-            tenant_id=azure_tenanat_id,
-            service_principal_id=azure_client_id,
-            service_principal_password=azure_client_secret)
+            tenant_id="3417d36b-fa61-4b84-b95e-8414a4e5753f",
+            service_principal_id="3e43fe3e-52da-4f55-b82d-5f549747aebc",
+            service_principal_password="he28Q~aWF3BYYBiO-RkQp9GHEZ_vuUrOCHgbLbFW")
 
         # Create workspace by authenticating with service principal
         self.ws = Workspace.get(
