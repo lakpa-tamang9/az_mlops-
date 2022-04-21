@@ -60,7 +60,7 @@ class PrepareDataset:
             subscription_id=self.subscription_id,
             resource_group=self.rg,
             location=self.location,
-            wuth = service_principal
+            auth = service_principal
         )
 
     def create_dataset(self):
