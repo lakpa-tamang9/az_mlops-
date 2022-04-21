@@ -55,16 +55,16 @@ class PrepareDataset:
             service_principal_id="3e43fe3e-52da-4f55-b82d-5f549747aebc",
             service_principal_password="he28Q~aWF3BYYBiO-RkQp9GHEZ_vuUrOCHgbLbFW")
         
-        cli_auth = AzureCliAuthentication()
+        # cli_auth = AzureCliAuthentication()
 
 
         # Create workspace by authenticating with service principal
-        self.ws = Workspace.get(
+        self.ws = Workspace(
             name=ws,
             subscription_id=self.subscription_id,
             resource_group=self.rg,
             location=self.location,
-            auth = cli_auth
+            auth = service_principal
         )
 
     def create_dataset(self):
