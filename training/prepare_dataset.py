@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import os
 
 from azure.identity import DefaultAzureCredential, ClientSecretCredential
@@ -18,51 +17,30 @@ class PrepareDataset:
 
     def __init__(self) -> None:
         # Retrieve keyvault client
-        # try:
-        #     # user_assigned_identity = "18557749-e8fa-437a-aa40-dc46986b022b"
-        #     key_vault_name = os.environ["KEY_VAULT_NAME"]
-        #     # client_ID = os.environ["AZURE_CLIENT_ID"]
-        #     key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
-        #     # key_vault_uri = f"https://hsdsecrets.vault.azure.net"
-        #     credential = DefaultAzureCredential()
-        #     # credential = ClientSecretCredential(tenant_id = '3417d36b-fa61-4b84-b95e-8414a4e5753f',
-        #     # client_id = '3e43fe3e-52da-4f55-b82d-5f549747aebc', client_secret = 'he28Q~aWF3BYYBiO-RkQp9GHEZ_vuUrOCHgbLbFW')
-        #     client = SecretClient(vault_url=key_vault_uri, credential=credential)
-        # except Exception as error:
-        #     print(error)
-        parser = argparse.ArgumentParser(description="Add secrets from key vault")
-        parser.add_argument("--location", type=str, help="Location")
-        parser.add_argument("--account_key", type=str, help="Account key")
-        parser.add_argument("--account_name", type=str, help="Name of the account")
-        parser.add_argument("--container_name", type=str, help="Name of the container")
-        parser.add_argument("--resource_group", type=str, help="Resource group name")
-        parser.add_argument("--service_name", type=str, help="Service name for staging in ACI")
-        parser.add_argument("--sub_id", type=str, help="Subscription ID")
-        parser.add_argument("--workspace", type=str, help="Name of the workspace")
-
-        args = parser.parse_args()
-
+        try:
+            # user_assigned_identity = "18557749-e8fa-437a-aa40-dc46986b022b"
+            key_vault_name = os.environ["KEY_VAULT_NAME"]
+            # client_ID = os.environ["AZURE_CLIENT_ID"]
+            key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
+            # key_vault_uri = f"https://hsdsecrets.vault.azure.net"
+            credential = DefaultAzureCredential()
+            # credential = ClientSecretCredential(tenant_id = '3417d36b-fa61-4b84-b95e-8414a4e5753f',
+            # client_id = '3e43fe3e-52da-4f55-b82d-5f549747aebc', client_secret = 'he28Q~aWF3BYYBiO-RkQp9GHEZ_vuUrOCHgbLbFW')
+            client = SecretClient(vault_url=key_vault_uri, credential=credential)
+        except Exception as error:
+            print(error)
 
         # Retrieve account and storage details
-        # self.rg = client.get_secret("RESOURCE-GROUP").value
-        # self.subscription_id = client.get_secret("SUB-ID").value
-        # self.location = client.get_secret("LOCATION").value
-        # ws = client.get_secret("WORKSPACE").value
-
-        # # Datalake information
-        # self.storage_account_name = client.get_secret("ACCOUNT-NAME").value
-        # self.container_name = client.get_secret("CONTAINER-NAME").value
-        # self.storage_account_key = client.get_secret("ACCOUNT-KEY").value
-
-        self.rg = args.resource_group
-        self.subscription_id = args.sub_id
-        self.location = args.location
-        ws = args.workspace
+        self.rg = client.get_secret("RESOURCE-GROUP").value
+        self.subscription_id = client.get_secret("SUB-ID").value
+        self.location = client.get_secret("LOCATION").value
+        ws = client.get_secret("WORKSPACE").value
 
         # Datalake information
-        self.storage_account_name = args.account_name
-        self.container_name = args.container_name
-        self.storage_account_key = args.account_key
+        self.storage_account_name = client.get_secret("ACCOUNT-NAME").value
+        self.container_name = client.get_secret("CONTAINER-NAME").value
+        self.storage_account_key = client.get_secret("ACCOUNT-KEY").value
+
         try:
             with open("./training/dataset_config.json") as f:
                 self.dataset_config = json.load(f)
