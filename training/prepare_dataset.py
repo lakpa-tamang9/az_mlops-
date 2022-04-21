@@ -21,7 +21,8 @@ class PrepareDataset:
         parser = argparse.ArgumentParser(description="Argument for key vault name")
         parser.add_argument("--kv_name", type=str, help="Name of the key vault")
         args = parser.parse_args()
-        key_vault_name = args.kv_name
+        # key_vault_name = args.kv_name
+        key_vault_name = "hsdsecrets"
 
         # key_vault_name = os.environ["KEY_VAULT_NAME"]
         # azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
@@ -43,6 +44,7 @@ class PrepareDataset:
         azure_tenanat_id = client.get_secret("AZURE-TENANT-ID").value
         azure_client_id = client.get_secret("AZURE-CLIENT-ID").value
 
+        print(f"key_vault_name is {key_vault_name}")
         # Retrieve account and storage details
         self.rg = client.get_secret("RESOURCE-GROUP").value
         self.subscription_id = client.get_secret("SUB-ID").value
