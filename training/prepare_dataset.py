@@ -1,11 +1,11 @@
 import os
 
-from azure.identity import DefaultAzureCredential, ClientSecretCredential
+from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azureml.core import Dataset, Datastore, Workspace
 import json
 import argparse
-from azureml.core.authentication import ServicePrincipalAuthentication
+from azureml.core.authentication import ServicePrincipalAuthentication, AzureCliAuthentication
 
 
 
@@ -54,6 +54,9 @@ class PrepareDataset:
             tenant_id="3417d36b-fa61-4b84-b95e-8414a4e5753f",
             service_principal_id="3e43fe3e-52da-4f55-b82d-5f549747aebc",
             service_principal_password="he28Q~aWF3BYYBiO-RkQp9GHEZ_vuUrOCHgbLbFW")
+        
+        cli_auth = AzureCliAuthentication()
+
 
         # Create workspace by authenticating with service principal
         self.ws = Workspace.get(
@@ -61,7 +64,7 @@ class PrepareDataset:
             subscription_id=self.subscription_id,
             resource_group=self.rg,
             location=self.location,
-            auth = service_principal
+            auth = cli_auth
         )
 
     def create_dataset(self):
