@@ -20,24 +20,25 @@ class PrepareDataset:
         # Retrieve keyvault client
         parser = argparse.ArgumentParser(description="Argument for key vault name")
         parser.add_argument("--kv_name", type=str, help="Name of the key vault")
+        parser.add_argument("--az_client_secret", type=str, help="Client secret")
+        parser.add_argument("--az_tenant_ID", type=str, help="Tenant ID")
+        parser.add_argument("--az_client_ID", type=str, help="Client ID")
         args = parser.parse_args()
-        # key_vault_name = args.kv_name
-        key_vault_name = "hsdsecrets"
 
-        # key_vault_name = os.environ["KEY_VAULT_NAME"]
-        # azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
-        # azure_tenanat_id = os.environ["AZURE_TENANT_ID"]
-        # azure_client_id = os.environ["AZURE_CLIENT_ID"]
+        # Parse the values
+        key_vault_name = args.kv_name
+        azure_client_secret = args.az_client_secret
+        azure_tenanat_id = args.az_tenant_ID
+        azure_client_id = args.az_client_ID
+
+        print(
+            f"{key_vault_name}, \n{azure_client_secret}, \n{azure_tenanat_id}, \n{azure_client_id}"
+        )
         key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
         credential = DefaultAzureCredential()
         client = SecretClient(vault_url=key_vault_uri, credential=credential)
 
         # Get key vault name from the variable group as argument.
-
-        # key_vault_name = os.environ["KEY_VAULT_NAME"]
-        # azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
-        # azure_tenanat_id = os.environ["AZURE_TENANT_ID"]
-        # azure_client_id = os.environ["AZURE_CLIENT_ID"]
 
         # Retrive client secrets
         azure_client_secret = client.get_secret("AZURE-CLIENT-SECRET").value
