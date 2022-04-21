@@ -63,7 +63,6 @@ class PrepareDataset:
             workspace_name=ws,
             subscription_id=self.subscription_id,
             resource_group=self.rg,
-            location=self.location,
             auth = service_principal
         )
         print("Found workspace {} at location {}".format(self.ws.name, self.ws.location))
