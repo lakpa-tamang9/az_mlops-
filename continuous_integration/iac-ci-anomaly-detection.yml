@@ -53,74 +53,75 @@ steps:
     SecretsFilter: '*'
     RunAsPreJob: false
 
-- task: CmdLine@2
+# - task: CmdLine@2
+#   inputs:
+#     script: 'echo $(LOCATION) > secret.txt'
+- 
+
+- task: Bash@3
+  displayName: 'Register dataset'
   inputs:
-    script: 'echo $(LOCATION) > secret.txt'
+    azureSubscription: 'azure-resource-connection'
+    targetType: filePath
+    filePath: './training/prepare_dataset.sh'
+    workingDirectory: training
 
-# - task: Bash@3
-#   displayName: 'Register dataset'
-#   inputs:
-#     azureSubscription: 'azure-resource-connection'
-#     targetType: filePath
-#     filePath: './training/prepare_dataset.sh'
-#     workingDirectory: training
+- task: AzureCLI@2
+  displayName: 'Install Azure ML CLI'
+  inputs:
+    azureSubscription: 'azure-resource-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: 'az extension add -n azure-cli-ml'
 
-# - task: AzureCLI@2
-#   displayName: 'Install Azure ML CLI'
-#   inputs:
-#     azureSubscription: 'azure-resource-connection'
-#     scriptType: bash
-#     scriptLocation: inlineScript
-#     inlineScript: 'az extension add -n azure-cli-ml'
+- task: AzureCLI@2
+  displayName: 'Azure ML Compute Cluster'
+  inputs:
+    azureSubscription: 'azure-resource-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: 'az ml computetarget create amlcompute -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -n $(amlcompute.clusterName) -s $(amlcompute.vmSize) --min-nodes $(amlcompute.minNodes) --max-nodes $(amlcompute.maxNodes) --idle-seconds-before-scaledown $(amlcompute.idleSecondsBeforeScaledown) '
 
-# - task: AzureCLI@2
-#   displayName: 'Azure ML Compute Cluster'
-#   inputs:
-#     azureSubscription: 'azure-resource-connection'
-#     scriptType: bash
-#     scriptLocation: inlineScript
-#     inlineScript: 'az ml computetarget create amlcompute -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -n $(amlcompute.clusterName) -s $(amlcompute.vmSize) --min-nodes $(amlcompute.minNodes) --max-nodes $(amlcompute.maxNodes) --idle-seconds-before-scaledown $(amlcompute.idleSecondsBeforeScaledown) '
-
-# - bash: |
-#    mkdir metadata && mkdir models
+- bash: |
+   mkdir metadata && mkdir models
    
-#   displayName: 'Make metadata and models directory'
+  displayName: 'Make metadata and models directory'
 
-# - task: AzureCLI@2
-#   displayName: 'Training model'
-#   inputs:
-#     azureSubscription: 'azure-resource-connection'
-#     scriptType: bash
-#     scriptLocation: inlineScript
-#     inlineScript: 'az ml run submit-script -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -e $(experiment.name) --ct $(amlcompute.clusterName) -d conda_dependencies.yml -c train_insurance -t ../metadata/run.json train_aml.py'
-#     workingDirectory: training
+- task: AzureCLI@2
+  displayName: 'Training model'
+  inputs:
+    azureSubscription: 'azure-resource-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: 'az ml run submit-script -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -e $(experiment.name) --ct $(amlcompute.clusterName) -d conda_dependencies.yml -c train_insurance -t ../metadata/run.json train_aml.py'
+    workingDirectory: training
 
-# - task: AzureCLI@2
-#   displayName: 'Registering Model'
-#   inputs:
-#     azureSubscription: 'azure-resource-connection'
-#     scriptType: bash
-#     scriptLocation: inlineScript
-#     inlineScript: 'az ml model register -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -n $(model.name) -f metadata/run.json --asset-path outputs/models/anomaly_predict.onnx -d "anomaly prediction" --tag "data"="anomaly" --tag "model"="prediction" -t metadata/model.json'
+- task: AzureCLI@2
+  displayName: 'Registering Model'
+  inputs:
+    azureSubscription: 'azure-resource-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: 'az ml model register -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -n $(model.name) -f metadata/run.json --asset-path outputs/models/anomaly_predict.onnx -d "anomaly prediction" --tag "data"="anomaly" --tag "model"="prediction" -t metadata/model.json'
 
-# - task: AzureCLI@2
-#   displayName: 'Downloading model'
-#   inputs:
-#     azureSubscription: 'azure-resource-connection'
-#     scriptType: bash
-#     scriptLocation: inlineScript
-#     inlineScript: 'az ml model download -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -i $(jq -r .modelId metadata/model.json) -t ./models --overwrite'
+- task: AzureCLI@2
+  displayName: 'Downloading model'
+  inputs:
+    azureSubscription: 'azure-resource-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: 'az ml model download -g $(azureml.resourceGroup) -w $(azureml.workspaceName) -i $(jq -r .modelId metadata/model.json) -t ./models --overwrite'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: secret.txt
-    #  **/metadata/*
-    #  **/models/*
-    #  **/deployment_setup/*
-    #  **/tests/integration/*
-    #  **/package_requirement/*
+    Contents: |
+     **/metadata/*
+     **/models/*
+     **/deployment_setup/*
+     **/tests/integration/*
+     **/package_requirement/*
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishPipelineArtifact@1
