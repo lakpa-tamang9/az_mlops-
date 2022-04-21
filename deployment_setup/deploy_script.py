@@ -41,12 +41,12 @@ try:
     auth = service_principal)
     print("The workspace is created successfully")
 
-except Exception:
-    print("Cannot create workspace. Please check the configuration settings.")
+except Exception as e:
+    print(e)
 
 # Register the model
 try:
-    latest_registered_model = Model.list(ws)[0]   
+    latest_registered_model = Model.list(workspace)[0]   
 except Exception:
     print("No registered model found")
 env = Environment(name = "project_environment")
