@@ -54,7 +54,7 @@ steps:
 # - task: CmdLine@2
 #   inputs:
 #     script: 'echo $(LOCATION) > secret.txt'
-- 
+
 - script: python training/prepare_dataset.py |
     --location $(LOCATION)
     --account_key $(ACCOUNT-KEY)
