@@ -5,6 +5,8 @@ from azure.keyvault.secrets import SecretClient
 from azureml.core import Dataset, Datastore, Workspace
 import json
 import argparse
+from azureml.core.authentication import ServicePrincipalAuthentication
+
 
 
 class PrepareDataset:
@@ -20,12 +22,11 @@ class PrepareDataset:
         try:
             # user_assigned_identity = "18557749-e8fa-437a-aa40-dc46986b022b"
             key_vault_name = os.environ["KEY_VAULT_NAME"]
-            # client_ID = os.environ["AZURE_CLIENT_ID"]
+            azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
+            azure_tenanat_id = os.environ["AZURE_TENANT_ID"]
+            azure_client_id = os.environ["AZURE_CLIENT_ID"]
             key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
-            # key_vault_uri = f"https://hsdsecrets.vault.azure.net"
             credential = DefaultAzureCredential()
-            # credential = ClientSecretCredential(tenant_id = '3417d36b-fa61-4b84-b95e-8414a4e5753f',
-            # client_id = '3e43fe3e-52da-4f55-b82d-5f549747aebc', client_secret = 'he28Q~aWF3BYYBiO-RkQp9GHEZ_vuUrOCHgbLbFW')
             client = SecretClient(vault_url=key_vault_uri, credential=credential)
         except Exception as error:
             print(error)
@@ -47,11 +48,19 @@ class PrepareDataset:
         except Exception:
             print("Cannot load dataset configuration.")
 
+        # Define service principal
+        service_principal = ServicePrincipalAuthentication(
+            tenant_id=azure_tenanat_id,
+            service_principal_id=azure_client_id,
+            service_principal_password=azure_client_secret)
+
+        # Create workspace by authenticating with service principal
         self.ws = Workspace.get(
             name=ws,
             subscription_id=self.subscription_id,
             resource_group=self.rg,
             location=self.location,
+            wuth = service_principal
         )
 
     def create_dataset(self):
