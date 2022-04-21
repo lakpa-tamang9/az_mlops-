@@ -36,11 +36,11 @@ steps:
     scriptLocation: inlineScript
     inlineScript: 'az login --service-principal --username $(AZURE_CLIENT_ID) --password $(AZURE_CLIENT_SECRET) --tenant $(AZURE_TENANT_ID)'
 
-# - script: python training/prepare_dataset.py --kv_name $(KEY_VAULT_NAME)
-#   displayName: 'Register datasets'
-
-- script: python training/prepare_dataset.py
+- script: python training/prepare_dataset.py --kv_name $(KEY_VAULT_NAME) --az_client_secret $(AZURE_CLIENT_SECRET) --az_tenant_ID $(AZURE_TENANT_ID) --az_client_ID $(AZURE_CLIENT_ID)
   displayName: 'Register datasets'
+
+# - script: python training/prepare_dataset.py
+#   displayName: 'Register datasets'
 
 - task: AzureCLI@2
   displayName: 'Install Azure ML CLI'
