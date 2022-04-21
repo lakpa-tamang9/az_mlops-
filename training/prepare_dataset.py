@@ -18,20 +18,30 @@ class PrepareDataset:
 
     def __init__(self) -> None:
         # Retrieve keyvault client
-        try:
-            # user_assigned_identity = "18557749-e8fa-437a-aa40-dc46986b022b"
-            key_vault_name = os.environ["KEY_VAULT_NAME"]
-            azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
-            azure_tenanat_id = os.environ["AZURE_TENANT_ID"]
-            azure_client_id = os.environ["AZURE_CLIENT_ID"]
-            key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
-            credential = DefaultAzureCredential()
-            client = SecretClient(vault_url=key_vault_uri, credential=credential)
-        except Exception as error:
-            print(error)
-        print(
-            f"azure_tenanat_id:{azure_tenanat_id},\nazure_client_id:{azure_client_id}\nazure_client_secret:{azure_client_secret}"
-        )
+        parser = argparse.ArgumentParser(description="Argument for key vault name")
+        parser.add_argument("--kv_name", type=str, help="Name of the key vault")
+        args = parser.parse_args()
+        key_vault_name = args.kv_name
+
+        # key_vault_name = os.environ["KEY_VAULT_NAME"]
+        # azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
+        # azure_tenanat_id = os.environ["AZURE_TENANT_ID"]
+        # azure_client_id = os.environ["AZURE_CLIENT_ID"]
+        key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
+        credential = DefaultAzureCredential()
+        client = SecretClient(vault_url=key_vault_uri, credential=credential)
+
+        # Get key vault name from the variable group as argument.
+
+        # key_vault_name = os.environ["KEY_VAULT_NAME"]
+        # azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
+        # azure_tenanat_id = os.environ["AZURE_TENANT_ID"]
+        # azure_client_id = os.environ["AZURE_CLIENT_ID"]
+
+        # Retrive client secrets
+        azure_client_secret = client.get_secret("AZURE-CLIENT-SECRET").value
+        azure_tenanat_id = client.get_secret("AZURE-TENANT-ID").value
+        azure_client_id = client.get_secret("AZURE-CLIENT-ID").value
 
         # Retrieve account and storage details
         self.rg = client.get_secret("RESOURCE-GROUP").value
