@@ -25,6 +25,9 @@ container_name = client.get_secret("CONTAINER-NAME").value
 storage_account_key = client.get_secret("ACCOUNT-KEY").value
 service_name_staging = client.get_secret("SERVICE-NAME").value
 
+print(f"azure_tenanat_id:{azure_tenanat_id},\nazure_client_id:{azure_client_id}\nazure_client_secret:{azure_client_secret}")
+print(f"{subscription_id},\n{resource_group_name},\n {workspace_name}")
+
 service_principal = ServicePrincipalAuthentication(
     tenant_id = azure_tenanat_id,
     service_principal_id = azure_client_id,
@@ -32,7 +35,7 @@ service_principal = ServicePrincipalAuthentication(
 
 # Create the workspace with loaded deployment configs
 try: 
-    ws = Workspace(subscription_id = subscription_id, 
+    workspace = Workspace(subscription_id = subscription_id, 
     resource_group = resource_group_name, 
     workspace_name = workspace_name,
     auth = service_principal)
@@ -65,7 +68,7 @@ cpu_cores=1, memory_gb=1, auth_enabled=True
 
 # Deploy the service
 service = Model.deploy(
-    ws,
+    workspace,
     service_name_staging,
     [latest_registered_model],
     inference_config,
