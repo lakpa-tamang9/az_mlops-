@@ -30,6 +30,7 @@ class PrepareDataset:
             client = SecretClient(vault_url=key_vault_uri, credential=credential)
         except Exception as error:
             print(error)
+        print(f"azure_tenanat_id:{azure_tenanat_id},\nazure_client_id:{azure_client_id}\nazure_client_secret:{azure_client_secret}")
 
         # Retrieve account and storage details
         self.rg = client.get_secret("RESOURCE-GROUP").value
