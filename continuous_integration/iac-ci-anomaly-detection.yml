@@ -27,13 +27,6 @@ steps:
     AZURE_CLIENT_SECRET: $(azureml.clientSecret)
   displayName: 'Setting up Environment Variable'
 
-# - task: AzureCLI@2
-#   displayName: 'create service principal'
-#   inputs:
-#     azureSubscription: 'azure-resource-connection'
-#     scriptType: bash
-#     scriptLocation: inlineScript
-#     inlineScript: 'azure ad sp create --applicationId $(AZURE_CLIENT_ID)'
      
 - task: AzureCLI@2
   displayName: 'Login using service principal'
@@ -41,25 +34,10 @@ steps:
     azureSubscription: 'azure-resource-connection'
     scriptType: bash
     scriptLocation: inlineScript
-    inlineScript: 'az login --service-principal --username 80af3691-0872-4324-a12f-47d49d995738 --password TAv8Q~xeeACh9OT0pvvjebuvUdCo3CDT2WmrSatv --tenant 3417d36b-fa61-4b84-b95e-8414a4e5753f'
-    
-# - script: python training/prepare_dataset.py
-#   displayName: 'Register datasets'
+    inlineScript: 'az login --service-principal --username $(AZURE_CLIENT_ID) --password $(AZURE_CLIENT_SECRET) --tenant $(AZURE_TENANT_ID)'
 
-- task: AzureKeyVault@2
-  inputs:
-    azureSubscription: 'azure-resource-connection'
-    KeyVaultName: 'hsdsecrets'
-    SecretsFilter: '*'
-    RunAsPreJob: false
-
-- task: Bash@3
-  displayName: 'Register dataset'
-  inputs:
-    azureSubscription: 'azure-resource-connection'
-    targetType: filePath
-    filePath: './training/prepare_dataset.sh'
-    workingDirectory: training
+- script: python training/prepare_dataset.py
+  displayName: 'Register datasets'
 
 - task: AzureCLI@2
   displayName: 'Install Azure ML CLI'
