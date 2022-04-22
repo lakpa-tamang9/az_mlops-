@@ -38,14 +38,6 @@ class PrepareDataset:
         credential = DefaultAzureCredential()
         client = SecretClient(vault_url=key_vault_uri, credential=credential)
 
-        # Get key vault name from the variable group as argument.
-
-        # Retrive client secrets
-        azure_client_secret = client.get_secret("AZURE-CLIENT-SECRET").value
-        azure_tenanat_id = client.get_secret("AZURE-TENANT-ID").value
-        azure_client_id = client.get_secret("AZURE-CLIENT-ID").value
-
-        print(f"key_vault_name is {key_vault_name}")
         # Retrieve account and storage details
         self.rg = client.get_secret("RESOURCE-GROUP").value
         self.subscription_id = client.get_secret("SUB-ID").value
