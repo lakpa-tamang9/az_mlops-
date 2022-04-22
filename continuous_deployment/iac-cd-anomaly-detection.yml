@@ -2,8 +2,7 @@ pool:
   name: Azure Pipelines
 
 variables:
-  azureml.resourceGroup: 'hsd_rg'
-  azureml.workspaceName: 'hsd_ws'
+- group: mlops-wsh-vg
 
 steps:
 - task: UsePythonVersion@0
@@ -26,9 +25,13 @@ steps:
     scriptLocation: inlineScript
     inlineScript: 'az extension add -n azure-cli-ml'
 
-- task: Bash@3
-  displayName: 'Deploy to container'
-  inputs:
-    targetType: filePath
-    filePath: '$(System.DefaultWorkingDirectory)/_CI-pipeline/hsd/deployment_setup/deploy.sh'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/_CI-pipeline/hsd/deployment_setup'
+# - task: Bash@3
+#   displayName: 'Deploy to container'
+#   inputs:
+#     targetType: filePath
+#     filePath: '$(System.DefaultWorkingDirectory)/_CI-pipeline/hsd/deployment_setup/deploy.sh'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/_CI-pipeline/hsd/deployment_setup'
+
+- script: |
+    python deployment_setup/deploy_script.py --kv_name $(KEY_VAULT_NAME) --az_client_secret $(AZURE_CLIENT_SECRET) --az_tenant_ID $(AZURE_TENANT_ID) --az_client_ID $(AZURE_CLIENT_ID) --resource_group $(azureml.resourceGroup) --workspace $(azureml.workspaceName) --location $(azureml.location) --storage_account_name $(STORAGE_NAME) --container_name $(CONTAINER_NAME)
+  displayName: 'Register datasets'

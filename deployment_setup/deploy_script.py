@@ -5,75 +5,87 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 import os
 from azureml.core.authentication import ServicePrincipalAuthentication
+import argparse
 
-key_vault_name = os.environ["KEY_VAULT_NAME"]
-azure_client_secret = os.environ["AZURE_CLIENT_SECRET"]
-azure_tenanat_id = os.environ["AZURE_TENANT_ID"]
-azure_client_id = os.environ["AZURE_CLIENT_ID"]
-key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
-credential = DefaultAzureCredential()
-client = SecretClient(vault_url=key_vault_uri, credential=credential)
 
-# Retrieve account and storage details
-resource_group_name = client.get_secret("RESOURCE-GROUP").value
-subscription_id = client.get_secret("SUB-ID").value
-location = client.get_secret("LOCATION").value
-workspace_name = client.get_secret("WORKSPACE").value
-storage_account_name = client.get_secret("ACCOUNT-NAME").value
-container_name = client.get_secret("CONTAINER-NAME").value
-storage_account_key = client.get_secret("ACCOUNT-KEY").value
-service_name_staging = client.get_secret("SERVICE-NAME").value
+def main():
+    # Get key vault name from the variable group as argument.
+    parser = argparse.ArgumentParser(description="Argument for key vault name")
+    parser.add_argument("--kv_name", type=str, help="Name of the key vault")
+    parser.add_argument("--az_client_secret", type=str, help="Client secret")
+    parser.add_argument("--az_tenant_ID", type=str, help="Tenant ID")
+    parser.add_argument("--az_client_ID", type=str, help="Client ID")
+    parser.add_argument("--resource_group", type=str, help="Resource group")
+    parser.add_argument("--workspace", type=str, help="ML workspace name")
+    args = parser.parse_args()
 
-service_principal = ServicePrincipalAuthentication(
-    tenant_id=azure_tenanat_id,
-    service_principal_id=azure_client_id,
-    service_principal_password=azure_client_secret,
-)
+    # Access key vault token using default azure credentials
+    key_vault_uri = f"https://{args.kv_name}.vault.azure.net"
+    credential = DefaultAzureCredential()
 
-try:
-    workspace = Workspace(
-        subscription_id=subscription_id,
-        resource_group=resource_group_name,
-        workspace_name=workspace_name,
-        auth=service_principal,
+    # Create client to get secrets from key vault
+    client = SecretClient(vault_url=key_vault_uri, credential=credential)
+
+    # Retrieve secrets from the key vault
+    subscription_id = client.get_secret("SUB-ID").value
+    service_name_staging = client.get_secret("SERVICE-NAME").value
+
+    # Setting up a ML workflow as an automated process via service principal authentication
+    service_principal = ServicePrincipalAuthentication(
+        tenant_id=args.az_tenant_ID,
+        service_principal_id=args.az_client_ID,
+        service_principal_password=args.az_client_secret,
     )
-    print("The workspace is created successfully")
 
-except Exception as e:
-    print(e)
+    # Create workspace by authenticating with service principal
+    try:
+        workspace = Workspace(
+            subscription_id=subscription_id,
+            resource_group=args.resource_group,
+            workspace_name=args.workspace,
+            auth=service_principal,
+        )
+        print("The workspace is created successfully")
 
-# Register the model
-try:
-    latest_registered_model = Model.list(workspace)[0]
-except Exception:
-    print("No registered model found")
-env = Environment(name="project_environment")
+    except Exception as e:
+        print(e)
 
-# Specify the python packages for installing
-python_packages = ["numpy", "onnxruntime"]
-for package in python_packages:
-    env.python.conda_dependencies.add_pip_package(package)
+    # Register the model
+    try:
+        latest_registered_model = Model.list(workspace)[0]
+    except Exception:
+        print("No registered model found")
+    env = Environment(name="project_environment")
 
-# Specify the inference configuration
-inference_config = InferenceConfig(
-    environment=env,
-    entry_script="score.py",
-)
+    # Specify the python packages for installing
+    python_packages = ["numpy", "onnxruntime"]
+    for package in python_packages:
+        env.python.conda_dependencies.add_pip_package(package)
 
-# Specify the deployment configuration
-deployment_config = AciWebservice.deploy_configuration(
-    cpu_cores=1, memory_gb=1, auth_enabled=True
-)
+    # Specify the inference configuration
+    inference_config = InferenceConfig(
+        environment=env,
+        entry_script="score.py",
+    )
 
-# Deploy the service
-service = Model.deploy(
-    workspace,
-    service_name_staging,
-    [latest_registered_model],
-    inference_config,
-    deployment_config,
-    overwrite=True,
-)
-service.wait_for_deployment(show_output=True)
-key, _ = service.get_keys()
-print(f"Deployment is completed. The service key = {key}")
+    # Specify the deployment configuration
+    deployment_config = AciWebservice.deploy_configuration(
+        cpu_cores=1, memory_gb=1, auth_enabled=True
+    )
+
+    # Deploy the service
+    service = Model.deploy(
+        workspace,
+        service_name_staging,
+        [latest_registered_model],
+        inference_config,
+        deployment_config,
+        overwrite=True,
+    )
+    service.wait_for_deployment(show_output=True)
+    key, _ = service.get_keys()
+    print(f"Deployment is completed. The service key = {key}")
+
+
+if __name__ == "__main__":
+    main()
