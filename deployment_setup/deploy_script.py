@@ -17,7 +17,6 @@ def main():
     parser.add_argument("--az_client_ID", type=str, help="Client ID")
     parser.add_argument("--resource_group", type=str, help="Resource group")
     parser.add_argument("--workspace", type=str, help="ML workspace name")
-    parser.add_argument("--location", type=str, help="Resource group location")
     parser.add_argument(
         "--storage_account_name", type=str, help="Name of the storage account"
     )
@@ -25,16 +24,11 @@ def main():
     args = parser.parse_args()
 
     key_vault_name = args.kv_name
-    # azure_client_secret = args.az_client_secret
-    # azure_tenanat_id = args.az_tenant_ID
-    # azure_client_id = args.az_client_ID
-    # resource_group = args.resource_group
-    # w_space = args.workspace
-    # location = args.location
-    # storage_account_name = args.storage_account_name
-    # container_name = args.container_name
+
     print(key_vault_name)
-    # print(azure_client_secret, azure_tenanat_id, azure_client_id)
+    print(
+        f"{args.azure_client_secret}, \n{args.azure_tenanat_id},\n{args.azure_client_id}"
+    )
 
     key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
     credential = DefaultAzureCredential()
@@ -42,7 +36,6 @@ def main():
 
     # Retrieve account and storage details
     subscription_id = client.get_secret("SUB-ID").value
-    # storage_account_key = client.get_secret("ACCOUNT-KEY").value
     service_name_staging = client.get_secret("SERVICE-NAME").value
 
     service_principal = ServicePrincipalAuthentication(
