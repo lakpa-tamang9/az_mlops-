@@ -1,0 +1,6 @@
+azureml-core
+azure-identity
+azure-keyvault-secrets
+azureml-dataset-runtime
+azureml-sdk
+azure-cli
