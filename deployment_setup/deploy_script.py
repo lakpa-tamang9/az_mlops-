@@ -17,33 +17,27 @@ def main():
     parser.add_argument("--az_client_ID", type=str, help="Client ID")
     parser.add_argument("--resource_group", type=str, help="Resource group")
     parser.add_argument("--workspace", type=str, help="ML workspace name")
-    parser.add_argument(
-        "--storage_account_name", type=str, help="Name of the storage account"
-    )
-    parser.add_argument("--container_name", type=str, help="Name of the container")
     args = parser.parse_args()
 
-    key_vault_name = args.kv_name
-
-    print(key_vault_name)
-    print(
-        f"{args.azure_client_secret}, \n{args.azure_tenanat_id},\n{args.azure_client_id}"
-    )
-
-    key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
+    # Access key vault token using default azure credentials
+    key_vault_uri = f"https://{args.kv_name}.vault.azure.net"
     credential = DefaultAzureCredential()
+
+    # Create client to get secrets from key vault
     client = SecretClient(vault_url=key_vault_uri, credential=credential)
 
-    # Retrieve account and storage details
+    # Retrieve secrets from the key vault
     subscription_id = client.get_secret("SUB-ID").value
     service_name_staging = client.get_secret("SERVICE-NAME").value
 
+    # Setting up a ML workflow as an automated process via service principal authentication
     service_principal = ServicePrincipalAuthentication(
         tenant_id=args.az_tenant_ID,
         service_principal_id=args.az_client_ID,
         service_principal_password=args.az_client_secret,
     )
 
+    # Create workspace by authenticating with service principal
     try:
         workspace = Workspace(
             subscription_id=subscription_id,
