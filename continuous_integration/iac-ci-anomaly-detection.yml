@@ -18,15 +18,6 @@ steps:
     targetType: filePath
     filePath: './package_requirement/install_requirements.sh'
     workingDirectory: 'package_requirement'
-
-- bash:
-  env:
-    KEY_VAULT_NAME: $(azureml.keyvaultName)
-    AZURE_CLIENT_ID: $(azureml.azureClient)
-    AZURE_TENANT_ID: $(azureml.tenantID)
-    AZURE_CLIENT_SECRET: $(azureml.clientSecret)
-  displayName: 'Setting up Environment Variable'
-
      
 - task: AzureCLI@2
   displayName: 'Login using service principal'
