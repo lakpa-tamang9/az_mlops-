@@ -17,7 +17,9 @@ class PrepareDataset:
     """
 
     def __init__(self) -> None:
-        # Retrieve keyvault client
+        # Add arguments for executing the scripts
+        # These arguments are directly loaded from the variable groups
+        # and called in CI yaml pipeline.
         parser = argparse.ArgumentParser(description="Argument for key vault name")
         parser.add_argument("--kv_name", type=str, help="Name of the key vault")
         parser.add_argument("--az_client_secret", type=str, help="Client secret")
@@ -43,31 +45,25 @@ class PrepareDataset:
         self.storage_account_name = args.storage_account_name
         self.container_name = args.container_name
 
-        print(
-            f"{self.key_vault_name}, \n{self.azure_client_secret}, \n{self.azure_tenanat_id}, \n{self.azure_client_id}"
-        )
+        # Access key vault token using default azure credentials
         key_vault_uri = f"https://{self.key_vault_name}.vault.azure.net"
         credential = DefaultAzureCredential()
+
+        # Create client to get secrets from key vault
         client = SecretClient(vault_url=key_vault_uri, credential=credential)
 
-        # Retrieve account and storage details
-        # self.rg = client.get_secret("RESOURCE-GROUP").value
+        # Retrieve subscription ID and account key from key vault
         self.subscription_id = client.get_secret("SUB-ID").value
-        # self.location = client.get_secret("LOCATION").value
-        # workspace = client.get_secret("WORKSPACE").value
-
-        # Datalake information
-        # self.storage_account_name = client.get_secret("ACCOUNT-NAME").value
-        # self.container_name = client.get_secret("CONTAINER-NAME").value
         self.storage_account_key = client.get_secret("ACCOUNT-KEY").value
 
+        # Load dataset configuration
         try:
             with open("./training/dataset_config.json") as f:
                 self.dataset_config = json.load(f)
         except Exception:
             print("Cannot load dataset configuration.")
 
-        # Define service principal
+        # Setting up a ML workflow as an automated process via service principal authentication
         service_principal = ServicePrincipalAuthentication(
             tenant_id=self.azure_tenanat_id,
             service_principal_id=self.azure_client_id,
@@ -80,11 +76,6 @@ class PrepareDataset:
             subscription_id=self.subscription_id,
             resource_group=self.resource_group,
             auth=service_principal,
-        )
-        print(
-            "Found workspace {} at location {}".format(
-                self.workspace.name, self.workspace.location
-            )
         )
 
     def create_dataset(self):
@@ -118,8 +109,7 @@ class PrepareDataset:
                 create_new_version=True,
             )
         except Exception as e:
-            print(e)
-            print("Error while registering the dataset")
+            print(f"Error while registering the dataset because of {e}")
 
 
 preparedataset = PrepareDataset()
