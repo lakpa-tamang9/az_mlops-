@@ -29,7 +29,6 @@ def main():
 
     # Retrieve secrets from the key vault
     subscription_id = client.get_secret("SUB-ID").value
-    service_name_staging = client.get_secret("SERVICE-NAME").value
 
     # Setting up a ML workflow as an automated process via service principal authentication
     service_principal = ServicePrincipalAuthentication(
