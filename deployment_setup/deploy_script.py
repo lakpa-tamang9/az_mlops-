@@ -17,6 +17,7 @@ def main():
     parser.add_argument("--az_client_ID", type=str, help="Client ID")
     parser.add_argument("--resource_group", type=str, help="Resource group")
     parser.add_argument("--workspace", type=str, help="ML workspace name")
+    parser.add_argument("--service_name", type=str, help="Service name for staging")
     args = parser.parse_args()
 
     # Access key vault token using default azure credentials
@@ -76,7 +77,7 @@ def main():
     # Deploy the service
     service = Model.deploy(
         workspace,
-        service_name_staging,
+        args.service_name,
         [latest_registered_model],
         inference_config,
         deployment_config,
