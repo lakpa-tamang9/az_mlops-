@@ -20,6 +20,7 @@ steps:
     workingDirectory: 'package_requirement'
 
 - script: pip install -r requirements.txt
+  workingDirectory: package_requirement
   displayName: 'Install requirements'
      
 - task: AzureCLI@2
@@ -88,6 +89,7 @@ steps:
      **/metadata/*
      **/models/*
      **/deployment_setup/*
+     **/package_requirement/*
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishPipelineArtifact@1
