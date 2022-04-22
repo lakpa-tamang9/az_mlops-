@@ -12,13 +12,6 @@ steps:
   inputs:
     versionSpec: 3.6
 
-- task: Bash@3
-  displayName: 'Install Python Requirements'
-  inputs:
-    targetType: filePath
-    filePath: './package_requirement/install_requirements.sh'
-    workingDirectory: 'package_requirement'
-
 - script: pip install -r requirements.txt
   workingDirectory: package_requirement
   displayName: 'Install requirements'
