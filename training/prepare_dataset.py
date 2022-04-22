@@ -23,13 +23,19 @@ class PrepareDataset:
         parser.add_argument("--az_client_secret", type=str, help="Client secret")
         parser.add_argument("--az_tenant_ID", type=str, help="Tenant ID")
         parser.add_argument("--az_client_ID", type=str, help="Client ID")
+        parser.add_argument("--resource_group", type=str, help="Resource group")
+        parser.add_argument("--workspace", type=str, help="ML workspace name")
+        parser.add_argument("--location", type=str, help="Resource group location")
         args = parser.parse_args()
 
         # Parse the values
-        key_vault_name = args.kv_name
-        azure_client_secret = args.az_client_secret
-        azure_tenanat_id = args.az_tenant_ID
-        azure_client_id = args.az_client_ID
+        self.key_vault_name = args.kv_name
+        self.azure_client_secret = args.az_client_secret
+        self.azure_tenanat_id = args.az_tenant_ID
+        self.azure_client_id = args.az_client_ID
+        self.resource_group = args.resource_group
+        self.workspace = args.workspace
+        self.location = args.location
 
         print(
             f"{key_vault_name}, \n{azure_client_secret}, \n{azure_tenanat_id}, \n{azure_client_id}"
