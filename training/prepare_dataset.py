@@ -26,6 +26,10 @@ class PrepareDataset:
         parser.add_argument("--resource_group", type=str, help="Resource group")
         parser.add_argument("--workspace", type=str, help="ML workspace name")
         parser.add_argument("--location", type=str, help="Resource group location")
+        parser.add_argument(
+            "--storage_account_name", type=str, help="Name of the storage account"
+        )
+        parser.add_argument("--container_name", type=str, help="Name of the container")
         args = parser.parse_args()
 
         # Parse the values
@@ -34,25 +38,27 @@ class PrepareDataset:
         self.azure_tenanat_id = args.az_tenant_ID
         self.azure_client_id = args.az_client_ID
         self.resource_group = args.resource_group
-        self.workspace = args.workspace
+        self.w_space = args.workspace
         self.location = args.location
+        self.storage_account_name = args.storage_account_name
+        self.container_name = args.container_name
 
         print(
-            f"{key_vault_name}, \n{azure_client_secret}, \n{azure_tenanat_id}, \n{azure_client_id}"
+            f"{self.key_vault_name}, \n{self.azure_client_secret}, \n{self.azure_tenanat_id}, \n{self.azure_client_id}"
         )
-        key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
+        key_vault_uri = f"https://{self.key_vault_name}.vault.azure.net"
         credential = DefaultAzureCredential()
         client = SecretClient(vault_url=key_vault_uri, credential=credential)
 
         # Retrieve account and storage details
-        self.rg = client.get_secret("RESOURCE-GROUP").value
+        # self.rg = client.get_secret("RESOURCE-GROUP").value
         self.subscription_id = client.get_secret("SUB-ID").value
-        self.location = client.get_secret("LOCATION").value
-        ws = client.get_secret("WORKSPACE").value
+        # self.location = client.get_secret("LOCATION").value
+        # workspace = client.get_secret("WORKSPACE").value
 
         # Datalake information
-        self.storage_account_name = client.get_secret("ACCOUNT-NAME").value
-        self.container_name = client.get_secret("CONTAINER-NAME").value
+        # self.storage_account_name = client.get_secret("ACCOUNT-NAME").value
+        # self.container_name = client.get_secret("CONTAINER-NAME").value
         self.storage_account_key = client.get_secret("ACCOUNT-KEY").value
 
         try:
@@ -63,20 +69,22 @@ class PrepareDataset:
 
         # Define service principal
         service_principal = ServicePrincipalAuthentication(
-            tenant_id=azure_tenanat_id,
-            service_principal_id=azure_client_id,
-            service_principal_password=azure_client_secret,
+            tenant_id=self.azure_tenanat_id,
+            service_principal_id=self.azure_client_id,
+            service_principal_password=self.azure_client_secret,
         )
 
         # Create workspace by authenticating with service principal
-        self.ws = Workspace(
-            workspace_name=ws,
+        self.workspace = Workspace(
+            workspace_name=self.w_space,
             subscription_id=self.subscription_id,
-            resource_group=self.rg,
+            resource_group=self.resource_group,
             auth=service_principal,
         )
         print(
-            "Found workspace {} at location {}".format(self.ws.name, self.ws.location)
+            "Found workspace {} at location {}".format(
+                self.workspace.name, self.workspace.location
+            )
         )
 
     def create_dataset(self):
@@ -86,7 +94,7 @@ class PrepareDataset:
         """
         try:
             Datastore.register_azure_blob_container(
-                workspace=self.ws,
+                workspace=self.workspace,
                 datastore_name=self.dataset_config["datastore_name"],
                 container_name=self.container_name,
                 account_name=self.storage_account_name,
@@ -96,13 +104,15 @@ class PrepareDataset:
             print(e)
 
         try:
-            datastore = Datastore.get(self.ws, self.dataset_config["datastore_name"])
+            datastore = Datastore.get(
+                self.workspace, self.dataset_config["datastore_name"]
+            )
 
             datastore_path = [(datastore, self.dataset_config["data_path"])]
             dataset = Dataset.Tabular.from_delimited_files(datastore_path)
 
             dataset = dataset.register(
-                workspace=self.ws,
+                workspace=self.workspace,
                 name=self.dataset_config["dataset_name"],
                 description=self.dataset_config["dataset_desc"],
                 create_new_version=True,
