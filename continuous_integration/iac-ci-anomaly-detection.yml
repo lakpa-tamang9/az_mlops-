@@ -18,6 +18,9 @@ steps:
     targetType: filePath
     filePath: './package_requirement/install_requirements.sh'
     workingDirectory: 'package_requirement'
+
+- script: pip install -r requirements.txt
+  displayName: 'Install requirements'
      
 - task: AzureCLI@2
   displayName: 'Login using service principal'
@@ -88,8 +91,6 @@ steps:
      **/metadata/*
      **/models/*
      **/deployment_setup/*
-     **/tests/integration/*
-     **/package_requirement/*
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishPipelineArtifact@1
