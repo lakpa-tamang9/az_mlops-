@@ -45,6 +45,8 @@ steps:
   --resource_group $(azureml.resourceGroup)
   --workspace $(azureml.workspaceName)
   --location $(azureml.location)
+  --storage_account_name $(STORAGE_NAME)
+  --container_name $(CONTAINER_NAME)
   displayName: 'Register datasets'
 
 # - script: python training/prepare_dataset.py
