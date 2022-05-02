@@ -6,27 +6,26 @@ variables:
 - group: mlops-wsh-vg
 
 steps:
+
 - task: UsePythonVersion@0
   displayName: 'Use Python 3.6'
   inputs:
     versionSpec: 3.6
 
-- task: Bash@3
-  displayName: 'Install Python Requirements'
+- script: pip install -r requirements.txt
+  workingDirectory: package_requirement
+  displayName: 'Install requirements'
+     
+- task: AzureCLI@2
+  displayName: 'Login using service principal'
   inputs:
-    targetType: filePath
-    filePath: './package_requirement/install_requirements.sh'
-    workingDirectory: 'package_requirement'
+    azureSubscription: 'azure-resource-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: 'az login --service-principal --username $(AZURE_CLIENT_ID) --password $(AZURE_CLIENT_SECRET) --tenant $(AZURE_TENANT_ID)'
 
-- bash:
-  env:
-    KEY_VAULT_NAME: $(azureml.keyvaultName)
-    AZURE_CLIENT_ID: $(azureml.azureClient)
-    AZURE_TENANT_ID: $(azureml.tenantID)
-    AZURE_CLIENT_SECRET: $(azureml.clientSecret)
-  displayName: 'Setting up Environment Variable'
-
-- script: python training/prepare_dataset.py
+- script: |
+    python training/prepare_dataset.py --kv_name $(KEY_VAULT_NAME) --az_client_secret $(AZURE_CLIENT_SECRET) --az_tenant_ID $(AZURE_TENANT_ID) --az_client_ID $(AZURE_CLIENT_ID) --resource_group $(azureml.resourceGroup) --workspace $(azureml.workspaceName) --location $(azureml.location) --storage_account_name $(STORAGE_NAME) --container_name $(CONTAINER_NAME)
   displayName: 'Register datasets'
 
 - task: AzureCLI@2
@@ -83,7 +82,6 @@ steps:
      **/metadata/*
      **/models/*
      **/deployment_setup/*
-     **/tests/integration/*
      **/package_requirement/*
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
