@@ -1,6 +1,6 @@
-azureml-core
-azure-identity
-azure-keyvault-secrets
-azureml-dataset-runtime
-azureml-sdk
-azure-cli
+azureml-sdk==1.41.0
+azureml-core==1.41.0
+azure-cli==2.35.0
+azure-identity==1.7.0
+azureml-dataset-runtime==1.41.0
+azure-keyvault-secrets==4.4.0
