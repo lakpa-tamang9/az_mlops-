@@ -100,7 +100,7 @@ class PrepareDataset:
             )
 
             datastore_path = [(datastore, self.dataset_config["data_path"])]
-            dataset = Dataset.Tabular.from_delimited_files(datastore_path, encoding='ISO-8859-1')
+            dataset = Dataset.Tabular.from_delimited_files(datastore_path, encoding='iso88591')
 
             dataset = dataset.register(
                 workspace=self.workspace,
