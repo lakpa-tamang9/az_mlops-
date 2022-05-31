@@ -63,6 +63,14 @@ def main():
     # Split the data into test/train
     df = dataset.to_pandas_dataframe()
 
+    # Select data only from the selected date time frame
+    df_latest_date = df.PartitionKey.tolist()[-1]
+    df_start_date = df_latest_date - timedelta(days=2)
+
+    # Masking selective data within the date range
+    mask = (df["PartitionKey"] > df_start_date) & (df["PartitionKey"] <= df_latest_date)
+    df = df.loc[mask]
+
     # Select the features
     with open("feature_dict.json") as f:
         features = json.load(f)
